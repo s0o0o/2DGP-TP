@@ -5,6 +5,8 @@ from pygame import *
 import sys
 import os
 
+from pygame.examples.cursors import image_name
+
 # 초기 설정
 pygame.init()
 os.environ['SDL_VIDEO_CENTERED'] = '1'  # 화면을 초기 중심에 위치시킴
@@ -21,27 +23,32 @@ running = True
 shrinking = False  # 화면 사이즈 바뀌는거
 shrink_speed = 10  # 줄어드는 속도
 
-smallSize = 1.8
+startScene = True
+firstScene = False
+smallSize = 1.3
 
 #  게임 시작/종료 버튼 위치+ 크기
+backGround = image.load('배경1.png')
+backG_1 = image.load('배경2.png')
+
 button1image = image.load('시작버튼.png')
-button1image = pygame.transform.scale(button1image, (293/1.5, 91/1.5))
-button1Loc = button1image.get_rect(center=(screen_width // 2, 400))
+button1image = pygame.transform.scale(button1image, (293 / 1.5, 91 / 1.5))
+button1Loc = button1image.get_rect(center=(screen_width // 2, 450))
 
 button2image = image.load('게임종료.png')
-button2image = pygame.transform.scale(button2image, (293/1.5, 91/1.5))
-button2Loc = button2image.get_rect(center=(screen_width // 2, 450))
+button2image = pygame.transform.scale(button2image, (293 / 1.5, 91 / 1.5))
+button2Loc = button2image.get_rect(center=(screen_width // 2, 500))
 
 titleImage = image.load('제목.png')
-titleImage = pygame.transform.scale(titleImage, (450,300))
+titleImage = pygame.transform.scale(titleImage, (450, 300))
 titleLoc = titleImage.get_rect(center=(screen_width // 2, 150))
 
 firstChoice1 = pygame.image.load('1.png')
-firstChoice1 = pygame.transform.scale(firstChoice1, (598/smallSize, 736/smallSize))
-firstChoice1Loc = firstChoice1.get_rect(center=((screen_width // 2) - 290,300))
+firstChoice1 = pygame.transform.scale(firstChoice1, (598 / smallSize, 736 / smallSize))
+firstChoice1Loc = firstChoice1.get_rect(center=((target_width // 2), 300))
 firstChoice2 = pygame.image.load('2.png')
-firstChoice2 = pygame.transform.scale(firstChoice2, (598/smallSize, 736/smallSize))
-firstChoice2Loc = firstChoice2.get_rect(center=((screen_width // 2) + 290,300))
+firstChoice2 = pygame.transform.scale(firstChoice2, (598 / smallSize, 736 / smallSize))
+firstChoice2Loc = firstChoice2.get_rect(center=((target_width // 2), 300))
 # 그 처음 선택할 때 위치들.+사진 로드
 
 while running:
@@ -50,10 +57,13 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if firstChoice1Loc.collidepoint(event.pos):
+            if button1Loc.collidepoint(event.pos):
                 shrinking = True  # 클릭 시 축소 시작
-            elif firstChoice2Loc.collidepoint(event.pos):
-                shrinking = True  # 클릭 시 축소 시작
+                startScene = False
+                firstScene = True
+
+            if button2Loc.collidepoint(event.pos):
+                running = False
 
     # 화면사이즈 애니메이션 로직
     if shrinking:
@@ -73,15 +83,21 @@ while running:
         if screen_width == target_width and screen_height == target_height:
             shrinking = False
 
+
     # 화면 그리기
     screen.fill(WHITE)
-    screen.blit(firstChoice1, firstChoice1Loc)
-    screen.blit(firstChoice2, firstChoice2Loc)
-    screen.blit(button1image, button1Loc)
-    screen.blit(button2image, button2Loc)
-    screen.blit(titleImage, titleLoc)
+    if(startScene):
+        screen.blit(backGround,(0,0))
+        screen.blit(button1image, button1Loc)
+        screen.blit(button2image, button2Loc)
+        screen.blit(titleImage, titleLoc)
+    if(firstScene):
+        screen.blit(backG_1, (0, 0))
+        screen.blit(firstChoice1, firstChoice1Loc)
+        screen.blit(firstChoice2, firstChoice2Loc)
+
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(200)
 
 
 quit()
