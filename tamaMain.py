@@ -29,7 +29,7 @@ smallSize = 1.3
 
 #  게임 시작/종료 버튼 위치+ 크기
 backGround = image.load('배경1.png')
-backG_1 = image.load('배경2.png')
+backG_1 = image.load('도트배경.png')
 
 button1image = image.load('시작버튼.png')
 button1image = pygame.transform.scale(button1image, (293 / 1.5, 91 / 1.5))
