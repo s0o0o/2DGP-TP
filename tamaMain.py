@@ -21,21 +21,27 @@ running = True
 shrinking = False  # 화면 사이즈 바뀌는거
 shrink_speed = 10  # 줄어드는 속도
 
+smallSize = 1.8
+
 #  게임 시작/종료 버튼 위치+ 크기
 button1image = image.load('시작버튼.png')
+button1image = pygame.transform.scale(button1image, (293/1.5, 91/1.5))
+button1Loc = button1image.get_rect(center=(screen_width // 2, 400))
+
 button2image = image.load('게임종료.png')
-button1Loc = button1image.get_rect(center=(screen_width // 2, screen_height // 2))
-button2Loc = button2image.get_rect(center=(screen_width // 2, screen_height // 2))
+button2image = pygame.transform.scale(button2image, (293/1.5, 91/1.5))
+button2Loc = button2image.get_rect(center=(screen_width // 2, 450))
 
-
-smallSize = 1.8
+titleImage = image.load('제목.png')
+titleImage = pygame.transform.scale(titleImage, (450,300))
+titleLoc = titleImage.get_rect(center=(screen_width // 2, 150))
 
 firstChoice1 = pygame.image.load('1.png')
 firstChoice1 = pygame.transform.scale(firstChoice1, (598/smallSize, 736/smallSize))
-firstChoice1Loc = firstChoice1.get_rect(center=(250,300))
+firstChoice1Loc = firstChoice1.get_rect(center=((screen_width // 2) - 290,300))
 firstChoice2 = pygame.image.load('2.png')
 firstChoice2 = pygame.transform.scale(firstChoice2, (598/smallSize, 736/smallSize))
-firstChoice2Loc = firstChoice2.get_rect(center=(750,300))
+firstChoice2Loc = firstChoice2.get_rect(center=((screen_width // 2) + 290,300))
 # 그 처음 선택할 때 위치들.+사진 로드
 
 while running:
@@ -71,6 +77,9 @@ while running:
     screen.fill(WHITE)
     screen.blit(firstChoice1, firstChoice1Loc)
     screen.blit(firstChoice2, firstChoice2Loc)
+    screen.blit(button1image, button1Loc)
+    screen.blit(button2image, button2Loc)
+    screen.blit(titleImage, titleLoc)
     pygame.display.flip()
     clock.tick(60)
 
