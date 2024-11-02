@@ -1,8 +1,9 @@
 # main.py
 import pygame
+from pygame import *
 import os
 import sys
-from scene import scene_tick, draw_start_scene, draw_first_scene, scene_speeds  # scene.py에서 함수 가져오기
+from scene import scene_tick, draw_start_scene, draw_first_scene, scene_speeds, draw_second_scene  # scene.py에서 함수 가져오기
 
 # 초기화 및 기본 설정
 pygame.init()
@@ -32,8 +33,10 @@ shrinking = False
 startScene = True
 firstScene = False
 first_context = False
-smallSize =2
+smallSize =0.95
 shrink_speed = 10
+
+secondScene = False
 
 # 배경 및 버튼 이미지 불러오기
 backGround = pygame.image.load('배경1.png')
@@ -57,12 +60,40 @@ egg2Loc = egg2.get_rect(center=(target_width // 2, 300))
 egg3 = pygame.image.load('알3.png')
 egg3Loc = egg3.get_rect(center=(target_width // 2 + 150, 300))
 
+changeEffect = image.load('페이드인아웃.png')
+changeEffect2 = image.load('페이드아웃.png')
+changeEffectCurFrame = 0
+changeEffectCurFrame2 = 0
+changeEffectFrame = 13
+changeEffectLoc = changeEffect.get_rect(center=(target_width // 2, 0))
 selecEgg = False
  # 검은색 페이드
 
+isFade = False
 
 def set_frame_rate(speed):
     scene_tick(clock, speed)
+
+def fadeIn():
+    global changeEffectCurFrame, isFade
+    x = changeEffectCurFrame * 600
+    rect = pygame.Rect(x, 0, 600, 600)
+    screen.blit(changeEffect, (0, 0), rect)
+    if changeEffectCurFrame < 12:
+        changeEffectCurFrame = (changeEffectCurFrame + 1)
+    if changeEffectCurFrame == 12:
+        isFade = True
+
+
+def fadeOut():
+    global changeEffectCurFrame2,isFade
+    x = changeEffectCurFrame2 * 600
+    rect = pygame.Rect(x, 0, 600, 600)
+    screen.blit(changeEffect2, (0, 0), rect)
+
+    if changeEffectCurFrame2 < 12:
+        changeEffectCurFrame2 = (changeEffectCurFrame2 + 1)
+        isFade = True
 
 # 애니메이션 루프
 while running:
@@ -96,7 +127,7 @@ while running:
         if screen_width == target_width and screen_height == target_height:
             shrinking = False
             first_context = True
-            scene_speeds["firstScene"] = 20
+            scene_speeds["firstScene"] = 15
             set_frame_rate("firstScene")
 
 
@@ -114,7 +145,20 @@ while running:
         scene_tick(clock, "firstScene")
 
         if (selecEgg):
+
+            fadeIn()
+            if(isFade):
+                firstScene = False
+                secondScene = True
+                isFade = False
+            clock.tick(1000)
             pass
+    elif secondScene :
+        draw_second_scene(screen, firstChoice2, firstChoice2Loc)
+        fadeOut()
+        scene_tick(clock, "secondScene")
+        pass
+
 
 
 

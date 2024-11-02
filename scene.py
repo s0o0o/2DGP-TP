@@ -6,7 +6,8 @@ import pygame
 # 각 장면별 고유 속도 설정
 scene_speeds = {
     "startScene": 100,
-    "firstScene": 50000
+    "firstScene": 50000,
+    "secondScene" : 15
 }
 
 
@@ -23,7 +24,7 @@ def draw_start_scene(screen, firstChoice2Loc, firstChoice2, backGround, button1i
     screen.blit(backGround, (0, 0))
     screen.blit(button1image, button1Loc)
     screen.blit(button2image, button2Loc)
-    #screen.blit(firstChoice2, firstChoice2Loc)
+
     screen.blit(titleImage, titleLoc)
 
 
@@ -41,5 +42,6 @@ def draw_first_scene(screen, backG_1, firstChoice1, firstChoice1Loc, firstChoice
     text_rect = rendered_text.get_rect(center=(screen.get_width() // 2, 200))
     screen.blit(rendered_text, text_rect)
 
-
+def draw_second_scene(screen,firstChoice2, firstChoice2Loc):
+    screen.blit(firstChoice2, firstChoice2Loc)
 
