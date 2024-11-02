@@ -1,6 +1,7 @@
 import pygame
 from pico2d import load_image, get_events
 from pygame import *
+import random
 
 import sys
 import os
@@ -23,13 +24,23 @@ running = True
 shrinking = False  # 화면 사이즈 바뀌는거
 shrink_speed = 10  # 줄어드는 속도
 
+#폰트
+font = font.Font('NeoDunggeunmoPro-Regular.ttf', 25)
+text = "당신의 다마고치를 선택해주세요!"
+text_color = (0,0,0)  # 글자 색상
+text_displayed = ""  # 표시할 부분 문자열
+index = 0  # 현재 글자 위치
+
+# 각 씬들 출력될지말지
 startScene = True
 firstScene = False
+first_context=False
 smallSize = 1.3
 
 #  게임 시작/종료 버튼 위치+ 크기
 backGround = image.load('배경1.png')
 backG_1 = image.load('도트배경.png')
+
 
 button1image = image.load('시작버튼.png')
 button1image = pygame.transform.scale(button1image, (293 / 1.5, 91 / 1.5))
@@ -49,6 +60,7 @@ firstChoice1Loc = firstChoice1.get_rect(center=((target_width // 2), 300))
 firstChoice2 = pygame.image.load('2.png')
 firstChoice2 = pygame.transform.scale(firstChoice2, (598 / smallSize, 736 / smallSize))
 firstChoice2Loc = firstChoice2.get_rect(center=((target_width // 2), 300))
+
 # 그 처음 선택할 때 위치들.+사진 로드
 
 while running:
@@ -82,6 +94,7 @@ while running:
         # 목표 크기에 도달 시 애니메이션 종료
         if screen_width == target_width and screen_height == target_height:
             shrinking = False
+            first_context = True
 
 
     # 화면 그리기
@@ -96,8 +109,18 @@ while running:
         screen.blit(firstChoice1, firstChoice1Loc)
         screen.blit(firstChoice2, firstChoice2Loc)
 
+            # 텍스트 렌더링 및 그리기
+        if first_context:
+            if index < len(text):
+                text_displayed += text[index]
+                index += 1
+            rendered_text = font.render(text_displayed, True, text_color)
+            text_rect = rendered_text.get_rect(center=(screen_width // 2, 200 ))
+            screen.blit(rendered_text, text_rect)
+
+
     pygame.display.flip()
-    clock.tick(200)
+    clock.tick(60)
 
 
 quit()
