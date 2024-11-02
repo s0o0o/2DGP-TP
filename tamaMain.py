@@ -1,130 +1,124 @@
+# main.py
 import pygame
-from pico2d import load_image, get_events
-from pygame import *
-import random
-
-import sys
 import os
+import sys
+from scene import scene_tick, draw_start_scene, draw_first_scene, scene_speeds  # scene.py에서 함수 가져오기
 
-from pygame.examples.cursors import image_name
-
-# 초기 설정
+# 초기화 및 기본 설정
 pygame.init()
-os.environ['SDL_VIDEO_CENTERED'] = '1'  # 화면을 초기 중심에 위치시킴
-
-# 초기 화면 크기 설정
 screen_width, screen_height = 1000, 600
-target_width, target_height = 600, 600  # 최종 목표 크기
-screen = pygame.display.set_mode((screen_width, screen_height))
+target_width, target_height = 600, 600
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE | pygame.DOUBLEBUF)
 pygame.display.set_caption("HELLO MY TAMAGOCHI")
-
-WHITE = (255, 255, 255)
 clock = pygame.time.Clock()
-running = True
-shrinking = False  # 화면 사이즈 바뀌는거
-shrink_speed = 10  # 줄어드는 속도
+original_surface = pygame.Surface((screen_width, screen_height))
 
-#폰트
-font = font.Font('NeoDunggeunmoPro-Regular.ttf', 25)
+frame_counter = 0
+update_interval = 1  # 3
+
+os.environ['SDL_VIDEO_CENTERED'] = '1'
+
+# 색상, 텍스트 및 글꼴 설정
+WHITE = (255, 255, 255)
+font = pygame.font.Font('NeoDunggeunmoPro-Regular.ttf', 25)
 text = "당신의 다마고치를 선택해주세요!"
-text_color = (0,0,0)  # 글자 색상
-text_displayed = ""  # 표시할 부분 문자열
-index = 0  # 현재 글자 위치
+text_displayed = ""
+index = 0
+text_color = (0, 0, 0)
 
-# 각 씬들 출력될지말지
+# 상태 변수
+running = True
+shrinking = False
 startScene = True
 firstScene = False
-first_context=False
-smallSize = 1.3
+first_context = False
+smallSize =2
+shrink_speed = 10
 
-#  게임 시작/종료 버튼 위치+ 크기
-backGround = image.load('배경1.png')
-backG_1 = image.load('도트배경.png')
-
-
-button1image = image.load('시작버튼.png')
-button1image = pygame.transform.scale(button1image, (293 / 1.5, 91 / 1.5))
+# 배경 및 버튼 이미지 불러오기
+backGround = pygame.image.load('배경1.png')
+backG_1 = pygame.image.load('도트배경.png')
+button1image = pygame.transform.scale(pygame.image.load('시작버튼.png'), (293 / 1.5, 91 / 1.5))
 button1Loc = button1image.get_rect(center=(screen_width // 2, 450))
-
-button2image = image.load('게임종료.png')
-button2image = pygame.transform.scale(button2image, (293 / 1.5, 91 / 1.5))
+button2image = pygame.transform.scale(pygame.image.load('게임종료.png'), (293 / 1.5, 91 / 1.5))
 button2Loc = button2image.get_rect(center=(screen_width // 2, 500))
-
-titleImage = image.load('제목.png')
-titleImage = pygame.transform.scale(titleImage, (450, 300))
+titleImage = pygame.transform.scale(pygame.image.load('제목.png'), (450, 300))
 titleLoc = titleImage.get_rect(center=(screen_width // 2, 150))
 
-firstChoice1 = pygame.image.load('1.png')
-firstChoice1 = pygame.transform.scale(firstChoice1, (598 / smallSize, 736 / smallSize))
-firstChoice1Loc = firstChoice1.get_rect(center=((target_width // 2), 300))
-firstChoice2 = pygame.image.load('2.png')
-firstChoice2 = pygame.transform.scale(firstChoice2, (598 / smallSize, 736 / smallSize))
-firstChoice2Loc = firstChoice2.get_rect(center=((target_width // 2), 300))
+# 첫 번째 장면의 선택 이미지 및 알 이미지 불러오기
+firstChoice1 = pygame.transform.scale(pygame.image.load('1.png'), (598 / smallSize, 736 / smallSize))
+firstChoice1Loc = firstChoice1.get_rect(center=(target_width // 2, 300))
+firstChoice2 = pygame.transform.scale(pygame.image.load('3.png'), (598 / smallSize, 736 / smallSize))
+firstChoice2Loc = firstChoice2.get_rect(center=(target_width // 2, 300))
+egg1 = pygame.image.load('알1.png')
+egg1Loc = egg1.get_rect(center=(target_width // 2 - 150, 300))
+egg2 = pygame.image.load('알2.png')
+egg2Loc = egg2.get_rect(center=(target_width // 2, 300))
+egg3 = pygame.image.load('알3.png')
+egg3Loc = egg3.get_rect(center=(target_width // 2 + 150, 300))
 
-testImg = image.load('test.png')
+selecEgg = False
+ # 검은색 페이드
 
-# 그 처음 선택할 때 위치들.+사진 로드
 
+def set_frame_rate(speed):
+    scene_tick(clock, speed)
+
+# 애니메이션 루프
 while running:
-    events = pygame.event.get()
-    for event in events:
+    for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if button1Loc.collidepoint(event.pos):
-                shrinking = True  # 클릭 시 축소 시작
+                shrinking = True
                 startScene = False
                 firstScene = True
-
-            if button2Loc.collidepoint(event.pos):
+            elif button2Loc.collidepoint(event.pos):
                 running = False
+            elif egg1Loc.collidepoint(event.pos) or \
+                egg2Loc.collidepoint(event.pos) or \
+                egg3Loc.collidepoint(event.pos):
+                selecEgg = True
 
-    # 화면사이즈 애니메이션 로직
+    original_surface.blit(backGround, (0, 0))
+    original_surface.blit(button1image, button1Loc)
+    original_surface.blit(button2image, button2Loc)
+    original_surface.blit(titleImage, titleLoc)
+    # 화면 크기 애니메이션
     if shrinking:
-        # 화면 크기 조정
-        screen_width = max(target_width, screen_width - shrink_speed)
-        screen_height = max(target_height, screen_height - shrink_speed)
-
-        # 창을 중앙에 맞추기 위해 새로운 위치 계산
-        new_x = (1000 - screen_width) // 2
-        new_y = (600 - screen_height) // 2
-        os.environ['SDL_VIDEO_WINDOW_POS'] = f"{new_x},{new_y}"
-
-        # 새 크기로 화면 설정
-        screen = pygame.display.set_mode((screen_width, screen_height))
-
-        # 목표 크기에 도달 시 애니메이션 종료
+        frame_counter += 1
+        if frame_counter % update_interval == 0:
+            screen_width = max(target_width, screen_width - shrink_speed)
+            screen_height = max(target_height, screen_height - shrink_speed)
+            screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE | pygame.DOUBLEBUF)
+            frame_counter = 0  # 카운터 초기화
         if screen_width == target_width and screen_height == target_height:
             shrinking = False
             first_context = True
+            scene_speeds["firstScene"] = 20
+            set_frame_rate("firstScene")
 
 
     # 화면 그리기
     screen.fill(WHITE)
-    if(startScene):
-        screen.blit(backGround,(0,0))
-        screen.blit(button1image, button1Loc)
-        screen.blit(button2image, button2Loc)
-        screen.blit(titleImage, titleLoc)
-    if(firstScene):
-        screen.blit(backG_1, (0, 0))
-        screen.blit(firstChoice1, firstChoice1Loc)
-        screen.blit(firstChoice2, firstChoice2Loc)
-        #screen.blit(testImg, (0, 0))
+    if startScene:
+        draw_start_scene(screen, firstChoice2Loc, firstChoice2, backGround, button1image, button1Loc, button2image, button2Loc, titleImage, titleLoc)
+        scene_tick(clock, "startScene")
 
-            # 텍스트 렌더링 및 그리기
-        if first_context:
-            if index < len(text):
-                text_displayed += text[index]
-                index += 1
-            rendered_text = font.render(text_displayed, True, text_color)
-            text_rect = rendered_text.get_rect(center=(screen_width // 2, 200 ))
-            screen.blit(rendered_text, text_rect)
+    elif firstScene:
+        if first_context and index < len(text):
+            text_displayed += text[index]
+            index += 1
+        draw_first_scene(screen, backG_1, firstChoice1, firstChoice1Loc, firstChoice2, firstChoice2Loc, egg1, egg1Loc, egg2, egg2Loc, egg3, egg3Loc, text_displayed, font, text_color)
+        scene_tick(clock, "firstScene")
+
+        if (selecEgg):
+            pass
+
 
 
     pygame.display.flip()
-    clock.tick(60)
 
-
-quit()
+pygame.quit()
 sys.exit()
