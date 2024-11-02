@@ -61,6 +61,8 @@ firstChoice2 = pygame.image.load('2.png')
 firstChoice2 = pygame.transform.scale(firstChoice2, (598 / smallSize, 736 / smallSize))
 firstChoice2Loc = firstChoice2.get_rect(center=((target_width // 2), 300))
 
+testImg = image.load('test.png')
+
 # 그 처음 선택할 때 위치들.+사진 로드
 
 while running:
@@ -108,6 +110,7 @@ while running:
         screen.blit(backG_1, (0, 0))
         screen.blit(firstChoice1, firstChoice1Loc)
         screen.blit(firstChoice2, firstChoice2Loc)
+        #screen.blit(testImg, (0, 0))
 
             # 텍스트 렌더링 및 그리기
         if first_context:
