@@ -1,7 +1,4 @@
 # scene.py
-import pygame
-
-
 
 # 각 장면별 고유 속도 설정
 scene_speeds = {
@@ -28,6 +25,7 @@ def draw_start_scene(screen, firstChoice2Loc, firstChoice2, backGround, button1i
     screen.blit(titleImage, titleLoc)
 
 
+# 이거 알 선택 후
 def draw_first_scene(screen, backG_1, firstChoice1, firstChoice1Loc, firstChoice2, firstChoice2Loc, egg1, egg1Loc, egg2,
                      egg2Loc, egg3, egg3Loc, text_displayed, font, text_color):
     screen.blit(backG_1, (0, 0))
@@ -42,6 +40,21 @@ def draw_first_scene(screen, backG_1, firstChoice1, firstChoice1Loc, firstChoice
     text_rect = rendered_text.get_rect(center=(screen.get_width() // 2, 200))
     screen.blit(rendered_text, text_rect)
 
-def draw_second_scene(screen,firstChoice2, firstChoice2Loc):
+# 이건 알선택후  -> 첫 화면..넘어가서.. 부터
+def draw_second_scene(screen,firstChoice2, firstChoice2Loc,selectEggNum,egg1,egg2,egg3,selecFinalEggLoc):
     screen.blit(firstChoice2, firstChoice2Loc)
+    if selectEggNum == 1:
+        
+        screen.blit(egg1, selecFinalEggLoc)
+        pass
+    elif selectEggNum == 2:
+
+        screen.blit(egg2, selecFinalEggLoc)
+        pass
+    elif selectEggNum == 3:
+
+        screen.blit(egg3, selecFinalEggLoc)
+        pass
+
+
 

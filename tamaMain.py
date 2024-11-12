@@ -36,6 +36,7 @@ first_context = False
 smallSize =0.95
 shrink_speed = 10
 
+selectEggNum = 99
 secondScene = False
 
 # 배경 및 버튼 이미지 불러오기
@@ -59,6 +60,7 @@ egg2 = pygame.image.load('알2.png')
 egg2Loc = egg2.get_rect(center=(target_width // 2, 300))
 egg3 = pygame.image.load('알3.png')
 egg3Loc = egg3.get_rect(center=(target_width // 2 + 150, 300))
+selecFinalEggLoc = egg2.get_rect(center=(target_width // 2, 400))
 
 changeEffect = image.load('페이드인아웃.png')
 changeEffect2 = image.load('페이드아웃.png')
@@ -97,26 +99,33 @@ def fadeOut():
 
 # 애니메이션 루프
 while running:
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
+
             if button1Loc.collidepoint(event.pos):
                 shrinking = True
                 startScene = False
                 firstScene = True
             elif button2Loc.collidepoint(event.pos):
                 running = False
-            elif egg1Loc.collidepoint(event.pos) or \
-                egg2Loc.collidepoint(event.pos) or \
-                egg3Loc.collidepoint(event.pos):
+            elif egg1Loc.collidepoint(event.pos):
+                selectEggNum = 1
+                selecEgg = True
+            elif egg2Loc.collidepoint(event.pos):
+                selectEggNum = 2
+                selecEgg = True
+            elif egg3Loc.collidepoint(event.pos):
+                selectEggNum = 3
                 selecEgg = True
 
     original_surface.blit(backGround, (0, 0))
     original_surface.blit(button1image, button1Loc)
     original_surface.blit(button2image, button2Loc)
     original_surface.blit(titleImage, titleLoc)
-    # 화면 크기 애니메이션
+    # 화면 크기 애니메이션 줄이는
     if shrinking:
         frame_counter += 1
         if frame_counter % update_interval == 0:
@@ -145,7 +154,6 @@ while running:
         scene_tick(clock, "firstScene")
 
         if (selecEgg):
-
             fadeIn()
             if(isFade):
                 firstScene = False
@@ -154,8 +162,11 @@ while running:
             clock.tick(1000)
             pass
     elif secondScene :
-        draw_second_scene(screen, firstChoice2, firstChoice2Loc)
+        #print(selectEggNum)
+        draw_second_scene(screen, firstChoice2, firstChoice2Loc,selectEggNum,egg1,egg2,egg3,selecFinalEggLoc)
+
         fadeOut()
+        #print('selectEggNum =' , selectEggNum)
         scene_tick(clock, "secondScene")
         pass
 
