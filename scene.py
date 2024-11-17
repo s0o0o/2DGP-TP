@@ -44,7 +44,7 @@ def draw_first_scene(screen, backG_1, firstChoice1, firstChoice1Loc, firstChoice
 def draw_second_scene(screen,firstChoice2, firstChoice2Loc,selectEggNum,egg1,egg2,egg3,selecFinalEggLoc):
     screen.blit(firstChoice2, firstChoice2Loc)
     if selectEggNum == 1:
-        
+
         screen.blit(egg1, selecFinalEggLoc)
         pass
     elif selectEggNum == 2:
