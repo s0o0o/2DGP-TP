@@ -22,6 +22,7 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 # 색상, 텍스트 및 글꼴 설정
 WHITE = (255, 255, 255)
 font = pygame.font.Font('NeoDunggeunmoPro-Regular.ttf', 25)
+fontSmall = pygame.font.Font('NeoDunggeunmoPro-Regular.ttf', 22)
 text1 = "당신의 다마고치를 선택해주세요!"
 text_displayed = ""
 index = 0
@@ -75,8 +76,16 @@ selecEgg = False
  # 검은색 페이드
 isFade = False
 
-
+# 두번째 씬 (알 깨지고..~ 아기 태어나는 부분)
 room_BGimg = pygame.transform.smoothscale(pygame.image.load("배경방1.png"), (313, 313))
+eggBrake = False
+isTextAni1 = False
+
+afterEggBrake_text = ["짠!!","당신의 다마고치가 태어났습니다!", "열심히 잘 키워보도록 하세요!"]
+isEggBrake_text = [False,False,False]
+breakegg_text_displayed = ""
+eggBrakeindex = 0
+EggBrakeTextNum = 0
 
 # 성장별 모습
 baby_growth_imgs= ["아기1_idle.png", "아기2_idle.png"]
@@ -107,6 +116,7 @@ def fadeOut():
 
     if changeEffectCurFrame2 < 12:
         changeEffectCurFrame2 = (changeEffectCurFrame2 + 1)
+    if changeEffectCurFrame == 12:
         isFade = True
 
 
@@ -137,6 +147,9 @@ while running:
             elif firstScene and egg3Loc.collidepoint(event.pos):
                 selectEggNum = 3
                 selecEgg = True
+            elif secondScene and selecFinalEggLoc.collidepoint(event.pos):
+                eggBrake = True
+                isTextAni1 = True
 
 
     original_surface.blit(backGround, (0, 0))
@@ -164,6 +177,9 @@ while running:
         draw_start_scene(screen, firstChoice2Loc, firstChoice2, backGround, button1image, button1Loc, button2image, button2Loc, titleImage, titleLoc)
         scene_tick(clock, "startScene")
 
+
+
+
     elif firstScene:
         if first_context and index < len(text1):
             text_displayed += text1[index]
@@ -179,12 +195,45 @@ while running:
                 isFade = False
             clock.tick(1000)
             pass
+
     elif secondScene :
         #print(selectEggNum)
-        draw_second_scene(screen, firstChoice2, firstChoice2Loc,selectEggNum,egg1,egg2,egg3,
-                          selecFinalEggLoc,room_BGimg,baby_growth_imgs)
 
+        draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
+                          selecFinalEggLoc, room_BGimg, baby_growth_imgs, eggBrake, text_displayed, fontSmall
+                          ,breakegg_text_displayed)
         fadeOut()
+        if (isFade):
+            isFade = False
+            scene_speeds["secondScene"] = 10
+
+        if eggBrake == True:
+            if isTextAni1 == True:
+                if eggBrakeindex < len(afterEggBrake_text[EggBrakeTextNum]) and EggBrakeTextNum < 3:
+                    #print("hello")
+                    breakegg_text_displayed += afterEggBrake_text[EggBrakeTextNum][eggBrakeindex]
+                    eggBrakeindex += 1
+                    if eggBrakeindex >= len(afterEggBrake_text[EggBrakeTextNum])and EggBrakeTextNum < 2:
+                        breakegg_text_displayed = ""
+                        EggBrakeTextNum += 1
+                        eggBrakeindex = 0
+
+                if EggBrakeTextNum >= 3:
+                    isTextAni1 = False
+
+            if isTextAni1 == False:
+                EggBrakeTextNum = 2
+                eggBrakeindex= 18
+
+
+
+
+
+
+
+
+
+
         #print('selectEggNum =' , selectEggNum)
         scene_tick(clock, "secondScene")
         pass
