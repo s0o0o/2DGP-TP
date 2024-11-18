@@ -87,6 +87,8 @@ breakegg_text_displayed = ""
 eggBrakeindex = 0
 EggBrakeTextNum = 0
 
+buttonEat = image.load('밥주기버튼.png')
+buttonPlay = image.load('놀아주기버튼.png')
 # 성장별 모습
 baby_growth_imgs= ["아기1_idle.png", "아기2_idle.png"]
 frist_growth_imgs={ 1:["반항기_여1.png","반항기_여2.png","반항기_남1.png","반항기_남2.png"]}
@@ -201,7 +203,7 @@ while running:
 
         draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
                           selecFinalEggLoc, room_BGimg, baby_growth_imgs, eggBrake, text_displayed, fontSmall
-                          ,breakegg_text_displayed)
+                          ,breakegg_text_displayed,buttonEat,buttonPlay)
         fadeOut()
         if (isFade):
             isFade = False
