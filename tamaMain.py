@@ -22,7 +22,7 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 # 색상, 텍스트 및 글꼴 설정
 WHITE = (255, 255, 255)
 font = pygame.font.Font('NeoDunggeunmoPro-Regular.ttf', 25)
-text = "당신의 다마고치를 선택해주세요!"
+text1 = "당신의 다마고치를 선택해주세요!"
 text_displayed = ""
 index = 0
 text_color = (0, 0, 0)
@@ -33,7 +33,7 @@ shrinking = False
 startScene = True
 firstScene = False
 first_context = False
-smallSize =0.95
+smallSize =0.97
 shrink_speed = 10
 
 selectEggNum = 99
@@ -54,6 +54,9 @@ firstChoice1 = pygame.transform.scale(pygame.image.load('1.png'), (598 / smallSi
 firstChoice1Loc = firstChoice1.get_rect(center=(target_width // 2, 300))
 firstChoice2 = pygame.transform.scale(pygame.image.load('3.png'), (598 / smallSize, 736 / smallSize))
 firstChoice2Loc = firstChoice2.get_rect(center=(target_width // 2, 300))
+
+egg_imgs = ["알1.png","알2.png","알3.png"]
+
 egg1 = pygame.image.load('알1.png')
 egg1Loc = egg1.get_rect(center=(target_width // 2 - 150, 300))
 egg2 = pygame.image.load('알2.png')
@@ -70,8 +73,17 @@ changeEffectFrame = 13
 changeEffectLoc = changeEffect.get_rect(center=(target_width // 2, 0))
 selecEgg = False
  # 검은색 페이드
-
 isFade = False
+
+
+room_BGimg = pygame.transform.smoothscale(pygame.image.load("배경방1.png"), (313, 313))
+
+# 성장별 모습
+baby_growth_imgs= ["아기1_idle.png", "아기2_idle.png"]
+frist_growth_imgs={ 1:["반항기_여1.png","반항기_여2.png","반항기_남1.png","반항기_남2.png"]}
+second_growth_imgs={ 1:["사춘기_여1.png","사춘기_남1.png"]}
+final_growth_imgs={ 1:["성인_여1.png","성인_여2.png","성인_여3.png",
+                       "성인_남1.png","성인_남2.png","성인_남3.png"]}
 
 def set_frame_rate(speed):
     scene_tick(clock, speed)
@@ -97,6 +109,11 @@ def fadeOut():
         changeEffectCurFrame2 = (changeEffectCurFrame2 + 1)
         isFade = True
 
+
+
+
+
+
 # 애니메이션 루프
 while running:
 
@@ -111,15 +128,16 @@ while running:
                 firstScene = True
             elif button2Loc.collidepoint(event.pos):
                 running = False
-            elif egg1Loc.collidepoint(event.pos):
+            elif firstScene and egg1Loc.collidepoint(event.pos):
                 selectEggNum = 1
                 selecEgg = True
-            elif egg2Loc.collidepoint(event.pos):
+            elif firstScene and egg2Loc.collidepoint(event.pos):
                 selectEggNum = 2
                 selecEgg = True
-            elif egg3Loc.collidepoint(event.pos):
+            elif firstScene and egg3Loc.collidepoint(event.pos):
                 selectEggNum = 3
                 selecEgg = True
+
 
     original_surface.blit(backGround, (0, 0))
     original_surface.blit(button1image, button1Loc)
@@ -147,8 +165,8 @@ while running:
         scene_tick(clock, "startScene")
 
     elif firstScene:
-        if first_context and index < len(text):
-            text_displayed += text[index]
+        if first_context and index < len(text1):
+            text_displayed += text1[index]
             index += 1
         draw_first_scene(screen, backG_1, firstChoice1, firstChoice1Loc, firstChoice2, firstChoice2Loc, egg1, egg1Loc, egg2, egg2Loc, egg3, egg3Loc, text_displayed, font, text_color)
         scene_tick(clock, "firstScene")
@@ -163,7 +181,8 @@ while running:
             pass
     elif secondScene :
         #print(selectEggNum)
-        draw_second_scene(screen, firstChoice2, firstChoice2Loc,selectEggNum,egg1,egg2,egg3,selecFinalEggLoc)
+        draw_second_scene(screen, firstChoice2, firstChoice2Loc,selectEggNum,egg1,egg2,egg3,
+                          selecFinalEggLoc,room_BGimg,baby_growth_imgs)
 
         fadeOut()
         #print('selectEggNum =' , selectEggNum)
