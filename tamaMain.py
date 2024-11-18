@@ -88,7 +88,10 @@ eggBrakeindex = 0
 EggBrakeTextNum = 0
 
 buttonEat = image.load('밥주기버튼.png')
+buttonEatLoc = buttonEat.get_rect(center=(110,60))
 buttonPlay = image.load('놀아주기버튼.png')
+buttonPlayLoc = buttonEat.get_rect(center=(450,60))
+
 # 성장별 모습
 baby_growth_imgs= ["아기1_idle.png", "아기2_idle.png"]
 frist_growth_imgs={ 1:["반항기_여1.png","반항기_여2.png","반항기_남1.png","반항기_남2.png"]}
@@ -122,7 +125,8 @@ def fadeOut():
         isFade = True
 
 
-
+def reStart():
+    pass
 
 
 
@@ -152,6 +156,12 @@ while running:
             elif secondScene and selecFinalEggLoc.collidepoint(event.pos):
                 eggBrake = True
                 isTextAni1 = True
+            elif secondScene and buttonEatLoc.collidepoint(event.pos):
+                print("밥주기")
+                pass
+            elif secondScene and buttonPlayLoc.collidepoint(event.pos):
+                print("놀아주기")
+                pass
 
 
     original_surface.blit(backGround, (0, 0))
@@ -203,7 +213,7 @@ while running:
 
         draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
                           selecFinalEggLoc, room_BGimg, baby_growth_imgs, eggBrake, text_displayed, fontSmall
-                          ,breakegg_text_displayed,buttonEat,buttonPlay)
+                          ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc)
         fadeOut()
         if (isFade):
             isFade = False
