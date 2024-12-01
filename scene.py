@@ -54,15 +54,19 @@ def draw_first_scene(screen, backG_1, firstChoice1, firstChoice1Loc, firstChoice
 # 이건 알선택후  -> 첫 화면..넘어가서.. 부터!
 def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
                       selecFinalEggLoc, room_BGimg, baby_growth_imgs, eggBrake, text_displayed,fontSmall
-                      ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,backG_1):
+                      ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,backGround3
+                      ,dialog1,dialog1Loc,checkdig1):
 
     global character, frame,eggframe_x,index,EggBrakeTextNum
-    screen.blit(backG_1, (0, 0))
+    screen.blit(backGround3, (0, 0))
     screen.blit(room_BGimg, (145, 175))
     screen.blit(firstChoice2, firstChoice2Loc)
 
+    if(checkdig1 == True):
+        screen.blit(dialog1, dialog1Loc)
     screen.blit(buttonEat, buttonEatLoc)
     screen.blit(buttonPlay,buttonPlayLoc)
+
 
     if selectEggNum == 1:
         egg1 = image.load("알1_깨짐.png")

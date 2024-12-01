@@ -42,6 +42,9 @@ secondScene = False
 
 # 배경 및 버튼 이미지 불러오기
 backGround = pygame.image.load('배경1.png')
+backGround2 = pygame.image.load('배경3.png')
+backGround3 = pygame.image.load('배경4.png')
+backGround4 = pygame.image.load('배경5.png')
 backG_1 = pygame.image.load('도트배경.png')
 button1image = pygame.transform.scale(pygame.image.load('시작버튼.png'), (293 / 1.5, 91 / 1.5))
 button1Loc = button1image.get_rect(center=(screen_width // 2, 450))
@@ -94,10 +97,16 @@ buttonPlayLoc = buttonEat.get_rect(center=(450,60))
 
 # 성장별 모습
 baby_growth_imgs= ["아기1_idle.png", "아기2_idle.png"]
-frist_growth_imgs={ 1:["반항기_여1.png","반항기_여2.png","반항기_남1.png","반항기_남2.png"]}
-second_growth_imgs={ 1:["사춘기_여1.png","사춘기_남1.png"]}
-final_growth_imgs={ 1:["성인_여1.png","성인_여2.png","성인_여3.png",
-                       "성인_남1.png","성인_남2.png","성인_남3.png"]}
+frist_growth_imgs=["반항기_여1.png","반항기_여2.png","반항기_남1.png","반항기_남2.png"]
+second_growth_imgs=["사춘기_여1.png","사춘기_남1.png"]
+final_growth_imgs=["성인_여1.png","성인_여2.png","성인_여3.png",
+                       "성인_남1.png","성인_남2.png","성인_남3.png"]
+
+
+# 대사들..
+dialog1 = pygame.image.load('알깨주세요.png')
+dialog1Loc = dialog1.get_rect(center=(target_width // 2, 470))
+checkdig1 = True
 
 def set_frame_rate(speed):
     scene_tick(clock, speed)
@@ -156,12 +165,15 @@ while running:
             elif secondScene and selecFinalEggLoc.collidepoint(event.pos):
                 eggBrake = True
                 isTextAni1 = True
+                checkdig1 = False
             elif secondScene and buttonEatLoc.collidepoint(event.pos):
                 print("밥주기")
                 pass
             elif secondScene and buttonPlayLoc.collidepoint(event.pos):
                 print("놀아주기")
                 pass
+
+
 
 
     original_surface.blit(backGround, (0, 0))
@@ -213,7 +225,8 @@ while running:
 
         draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
                           selecFinalEggLoc, room_BGimg, baby_growth_imgs, eggBrake, text_displayed, fontSmall
-                          ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,backG_1)
+                          ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,backGround3
+                          ,dialog1,dialog1Loc,checkdig1)
         fadeOut()
         if (isFade):
             isFade = False
