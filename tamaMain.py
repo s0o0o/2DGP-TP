@@ -1,8 +1,14 @@
 # main.py
 import pygame
 from pygame import *
+
+#import pico2d
+from pico2d import load_image
 import os
 import sys
+
+from sdl2 import SDL_KEYDOWN, SDLK_a, SDLK_d, SDLK_w, SDLK_s
+
 from scene import scene_tick, draw_start_scene, draw_first_scene, scene_speeds, draw_second_scene  # scene.py에서 함수 가져오기
 
 # 초기화 및 기본 설정
@@ -34,7 +40,7 @@ shrinking = False
 startScene = True
 firstScene = False
 first_context = False
-smallSize =0.97
+smallSize = 0.97
 shrink_speed = 10
 
 selectEggNum = 99
@@ -45,6 +51,9 @@ backGround = pygame.image.load('배경1.png')
 backGround2 = pygame.image.load('배경3.png')
 backGround3 = pygame.image.load('배경4.png')
 backGround4 = pygame.image.load('배경5.png')
+
+restRoom_back = pygame.image.load('화장실.png')
+
 backG_1 = pygame.image.load('도트배경.png')
 button1image = pygame.transform.scale(pygame.image.load('시작버튼.png'), (293 / 1.5, 91 / 1.5))
 button1Loc = button1image.get_rect(center=(screen_width // 2, 450))
@@ -84,6 +93,7 @@ room_BGimg = pygame.transform.smoothscale(pygame.image.load("배경방1.png"), (
 eggBrake = False
 isTextAni1 = False
 
+showEggBrakeDia = True
 afterEggBrake_text = ["짠!!","당신의 다마고치가 태어났습니다!", "열심히 잘 키워보도록 하세요!"]
 isEggBrake_text = [False,False,False]
 breakegg_text_displayed = ""
@@ -96,8 +106,8 @@ buttonPlay = image.load('놀아주기버튼.png')
 buttonPlayLoc = buttonEat.get_rect(center=(450,60))
 
 # 성장별 모습
-baby_growth_imgs= ["아기1_idle.png", "아기2_idle.png"]
-frist_growth_imgs=["반항기_여1.png","반항기_여2.png","반항기_남1.png","반항기_남2.png"]
+baby_growth_imgs_idle= ["아기1_idle.png", "아기2_idle.png"]
+frist_growth_imgs=["반항기_여1_idle.png","반항기_여2_idle.png","반항기_남1_idle.png","반항기_남2_idle.png"]
 second_growth_imgs=["사춘기_여1.png","사춘기_남1.png"]
 final_growth_imgs=["성인_여1.png","성인_여2.png","성인_여3.png",
                        "성인_남1.png","성인_남2.png","성인_남3.png"]
@@ -107,6 +117,18 @@ final_growth_imgs=["성인_여1.png","성인_여2.png","성인_여3.png",
 dialog1 = pygame.image.load('알깨주세요.png')
 dialog1Loc = dialog1.get_rect(center=(target_width // 2, 470))
 checkdig1 = True
+
+
+#여러 이미지들...
+ddong =pygame.image.load('똥.png')
+ddongImo = pygame.image.load('똥이모지.png')
+loveImo = pygame.image.load('하트이모지.png')
+sleepImo = pygame.image.load('잠이모지.png')
+sleepButton = pygame.image.load('잠자기버튼.png')
+
+cha_x = 270
+cha_y = 350
+cha_speed = 5
 
 def set_frame_rate(speed):
     scene_tick(clock, speed)
@@ -145,34 +167,52 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
             if button1Loc.collidepoint(event.pos):
                 shrinking = True
                 startScene = False
                 firstScene = True
             elif button2Loc.collidepoint(event.pos):
                 running = False
-            elif firstScene and egg1Loc.collidepoint(event.pos):
-                selectEggNum = 1
-                selecEgg = True
-            elif firstScene and egg2Loc.collidepoint(event.pos):
-                selectEggNum = 2
-                selecEgg = True
-            elif firstScene and egg3Loc.collidepoint(event.pos):
-                selectEggNum = 3
-                selecEgg = True
-            elif secondScene and selecFinalEggLoc.collidepoint(event.pos):
-                eggBrake = True
-                isTextAni1 = True
-                checkdig1 = False
-            elif secondScene and buttonEatLoc.collidepoint(event.pos):
-                print("밥주기")
-                pass
-            elif secondScene and buttonPlayLoc.collidepoint(event.pos):
-                print("놀아주기")
-                pass
 
+            if firstScene:
+                if egg1Loc.collidepoint(event.pos):
+                    selectEggNum = 1
+                    selecEgg = True
+                elif egg2Loc.collidepoint(event.pos):
+                    selectEggNum = 2
+                    selecEgg = True
+                elif  egg3Loc.collidepoint(event.pos):
+                    selectEggNum = 3
+                    selecEgg = True
+
+            if secondScene:
+
+                if selecFinalEggLoc.collidepoint(event.pos):
+                    eggBrake = True
+                    isTextAni1 = True
+                    checkdig1 = False
+                elif buttonEatLoc.collidepoint(event.pos):
+                    print("밥주기")
+                    pass
+                elif buttonPlayLoc.collidepoint(event.pos):
+                    print("놀아주기")
+                    pass
+
+        if event.type == SDL_KEYDOWN:
+            if secondScene:
+                if event.key == SDLK_a:
+                    print('a')
+                    cha_x -= cha_speed
+                if event.key == SDLK_d:
+                    print('d')
+                    cha_x += cha_speed
+                if event.key == SDLK_w:
+                    print('w')
+                    # cha_y += cha_speed
+                if event.key == SDLK_s:
+                    print('s')
 
 
 
@@ -224,9 +264,9 @@ while running:
         #print(selectEggNum)
 
         draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
-                          selecFinalEggLoc, room_BGimg, baby_growth_imgs, eggBrake, text_displayed, fontSmall
+                          selecFinalEggLoc, room_BGimg, baby_growth_imgs_idle, eggBrake, text_displayed, fontSmall
                           ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,backGround3
-                          ,dialog1,dialog1Loc,checkdig1)
+                          ,dialog1,dialog1Loc,checkdig1,cha_x,cha_y)
         fadeOut()
         if (isFade):
             isFade = False
@@ -238,6 +278,7 @@ while running:
                     #print("hello")
                     breakegg_text_displayed += afterEggBrake_text[EggBrakeTextNum][eggBrakeindex]
                     eggBrakeindex += 1
+
                     if eggBrakeindex >= len(afterEggBrake_text[EggBrakeTextNum])and EggBrakeTextNum < 2:
                         breakegg_text_displayed = ""
                         EggBrakeTextNum += 1
@@ -248,7 +289,7 @@ while running:
 
             if isTextAni1 == False:
                 EggBrakeTextNum = 2
-                eggBrakeindex= 18
+                eggBrakeindex = 18
 
 
 

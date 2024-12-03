@@ -53,16 +53,16 @@ def draw_first_scene(screen, backG_1, firstChoice1, firstChoice1Loc, firstChoice
 
 # 이건 알선택후  -> 첫 화면..넘어가서.. 부터!
 def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
-                      selecFinalEggLoc, room_BGimg, baby_growth_imgs, eggBrake, text_displayed,fontSmall
+                      selecFinalEggLoc, room_BGimg, baby_growth_imgs_idle, eggBrake, text_displayed,fontSmall
                       ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,backGround3
-                      ,dialog1,dialog1Loc,checkdig1):
+                      ,dialog1,dialog1Loc,checkdig1,cha_x,cha_y):
 
     global character, frame,eggframe_x,index,EggBrakeTextNum
     screen.blit(backGround3, (0, 0))
     screen.blit(room_BGimg, (145, 175))
     screen.blit(firstChoice2, firstChoice2Loc)
 
-    if(checkdig1 == True):
+    if( checkdig1 == True ):
         screen.blit(dialog1, dialog1Loc)
     screen.blit(buttonEat, buttonEatLoc)
     screen.blit(buttonPlay,buttonPlayLoc)
@@ -103,6 +103,6 @@ def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1,
         frame_x = frame * frame_width
 
         character_frame = character_image.subsurface((frame_x, 0, frame_width, frame_height))
-        screen.blit(character_frame, (270, 350))
+        screen.blit(character_frame, (cha_x, cha_y))
         frame = (frame + 1) % babyIdleFrame
 
