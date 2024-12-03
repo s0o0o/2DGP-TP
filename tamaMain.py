@@ -126,9 +126,13 @@ loveImo = pygame.image.load('하트이모지.png')
 sleepImo = pygame.image.load('잠이모지.png')
 sleepButton = pygame.image.load('잠자기버튼.png')
 
+showImos = None
+isImo = False
+imoCount = 0
+
 cha_x = 270
 cha_y = 350
-cha_speed = 5
+cha_speed = 3
 
 def set_frame_rate(speed):
     scene_tick(clock, speed)
@@ -159,10 +163,14 @@ def fadeOut():
 def reStart():
     pass
 
+def update():
 
+    pass
 
-# 애니메이션 루프
-while running:
+def event_machine():
+    global running, shrinking, startScene, \
+        secondScene,firstScene, selectEggNum, selecEgg,eggBrake, isTextAni1,checkdig1,\
+        showImos, cha_x,cha_y,isImo,imoCount
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -194,10 +202,16 @@ while running:
                     isTextAni1 = True
                     checkdig1 = False
                 elif buttonEatLoc.collidepoint(event.pos):
+                    imoCount=0
                     print("밥주기")
+                    showImos = pygame.transform.smoothscale(loveImo, (30,30))
+                    isImo = True
                     pass
                 elif buttonPlayLoc.collidepoint(event.pos):
+                    imoCount=0
                     print("놀아주기")
+                    showImos = pygame.transform.smoothscale(loveImo, (30, 30))
+                    isImo = True
                     pass
 
         if event.type == SDL_KEYDOWN:
@@ -215,6 +229,10 @@ while running:
                     print('s')
 
 
+# 애니메이션 루프
+while running:
+
+    event_machine()
 
     original_surface.blit(backGround, (0, 0))
     original_surface.blit(button1image, button1Loc)
@@ -266,7 +284,7 @@ while running:
         draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
                           selecFinalEggLoc, room_BGimg, baby_growth_imgs_idle, eggBrake, text_displayed, fontSmall
                           ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,backGround3
-                          ,dialog1,dialog1Loc,checkdig1,cha_x,cha_y)
+                          ,dialog1,dialog1Loc,checkdig1,cha_x,cha_y,isImo, showImos, imoCount)
         fadeOut()
         if (isFade):
             isFade = False
@@ -291,14 +309,11 @@ while running:
                 EggBrakeTextNum = 2
                 eggBrakeindex = 18
 
-
-
-
-
-
-
-
-
+            if isImo == True:
+                imoCount += 1
+                if imoCount > 10:
+                    isImo = False
+                    imoCount = 0
 
         #print('selectEggNum =' , selectEggNum)
         scene_tick(clock, "secondScene")

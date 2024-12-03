@@ -55,7 +55,7 @@ def draw_first_scene(screen, backG_1, firstChoice1, firstChoice1Loc, firstChoice
 def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
                       selecFinalEggLoc, room_BGimg, baby_growth_imgs_idle, eggBrake, text_displayed,fontSmall
                       ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,backGround3
-                      ,dialog1,dialog1Loc,checkdig1,cha_x,cha_y):
+                      ,dialog1,dialog1Loc,checkdig1,cha_x,cha_y,isImo, showImos, imoCount):
 
     global character, frame,eggframe_x,index,EggBrakeTextNum
     screen.blit(backGround3, (0, 0))
@@ -105,4 +105,10 @@ def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1,
         character_frame = character_image.subsurface((frame_x, 0, frame_width, frame_height))
         screen.blit(character_frame, (cha_x, cha_y))
         frame = (frame + 1) % babyIdleFrame
+
+        if isImo == True:
+
+            screen.blit(showImos, (cha_x + 19 , cha_y))
+
+
 
