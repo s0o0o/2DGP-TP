@@ -3,6 +3,7 @@ import pygame
 from pygame import *
 
 
+
 # 각 장면별 고유 속도 설정
 scene_speeds = {
     "startScene": 100,
@@ -32,6 +33,10 @@ def draw_start_scene(screen, firstChoice2Loc, firstChoice2, backGround, button1i
 
 eggframe_x = 0
 
+staminaFrame = 0
+staminaIndex=0
+
+
 # 이거 알 선택 후
 def draw_first_scene(screen, backG_1, firstChoice1, firstChoice1Loc, firstChoice2, firstChoice2Loc, egg1, egg1Loc, egg2,
                      egg2Loc, egg3, egg3Loc, text_displayed, font, text_color):
@@ -53,14 +58,20 @@ def draw_first_scene(screen, backG_1, firstChoice1, firstChoice1Loc, firstChoice
 
 # 이건 알선택후  -> 첫 화면..넘어가서.. 부터!
 def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
-                      selecFinalEggLoc, room_BGimg, baby_growth_imgs_idle, eggBrake, text_displayed,fontSmall
-                      ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,backGround3
-                      ,dialog1,dialog1Loc,checkdig1,cha_x,cha_y,isImo, showImos, imoCount):
+                      selecFinalEggLoc, mainRoom_back, restRoom_back,nowRoom, baby_growth_imgs_idle, eggBrake, text_displayed,fontSmall
+                      ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,morningTime,eveningTime,nightTime
+                      ,dialog1,dialog1Loc,checkdig1,cha_x,cha_y,isImo, showImos, imoCount,presentTime,
+                      arrowleft,arrowleftLoc,arrowright,arrowrightLoc,staminaImg,staminaImgX
+                      ,isTextAni1,isShowTextAni,hpImgX,interestingImgX,interestingImg,hpImg,dayImg,dayImgX):
 
-    global character, frame,eggframe_x,index,EggBrakeTextNum
-    screen.blit(backGround3, (0, 0))
-    screen.blit(room_BGimg, (145, 175))
+    global character, frame,eggframe_x,index,EggBrakeTextNum,staminaFrame,staminaIndex
+    screen.blit(presentTime, (0, 0))
+    screen.blit(nowRoom, (145, 175))
     screen.blit(firstChoice2, firstChoice2Loc)
+    screen.blit(arrowleft, arrowleftLoc)
+    screen.blit(arrowright, arrowrightLoc)
+
+
 
     if( checkdig1 == True ):
         screen.blit(dialog1, dialog1Loc)
@@ -89,12 +100,8 @@ def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1,
         eggframe_x = (eggframe_x + 1) % 5
 
 
-
-
     if eggBrake == True:
-        rendered_text = fontSmall.render(breakegg_text_displayed, True, (0, 0, 0))
-        text_rect = rendered_text.get_rect(center=(screen.get_width() // 2, 450))
-        screen.blit(rendered_text, text_rect)
+
 
 
         character_image = transform.scale(baby_idle, (204 * 2, 54 * 2))
@@ -105,6 +112,24 @@ def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1,
         character_frame = character_image.subsurface((frame_x, 0, frame_width, frame_height))
         screen.blit(character_frame, (cha_x, cha_y))
         frame = (frame + 1) % babyIdleFrame
+
+        staminaImgFrameImg = staminaImg.subsurface((staminaImgX, 0, 100, 30))
+        screen.blit(staminaImgFrameImg, (145,470))
+
+        hpImgFrame = hpImg.subsurface((hpImgX, 0, 100, 30))
+        screen.blit(hpImgFrame, (255, 470))
+
+        interestingImgFrame = interestingImg.subsurface((interestingImgX, 0, 100, 30))
+        screen.blit(interestingImgFrame, (365, 470))
+
+        dayImgFrame = dayImg.subsurface((dayImgX, 0, 78, 22))
+        screen.blit(dayImgFrame, (265, 150))
+
+        if (isShowTextAni == True):
+            rendered_text = fontSmall.render(breakegg_text_displayed, True, (254, 254, 254))
+            text_rect = rendered_text.get_rect(center=(screen.get_width() // 2, 530))
+            screen.blit(rendered_text, text_rect)
+
 
         if isImo == True:
 
