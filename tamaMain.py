@@ -1,9 +1,11 @@
 # main.py
+import random
+
 import pygame
 from pygame import *
 
-#import pico2d
-from pico2d import load_image
+
+
 import os
 import sys
 
@@ -112,10 +114,15 @@ buttonPlayLoc = buttonEat.get_rect(center=(target_width//2 + 70,80))
 
 # 성장별 모습
 baby_growth_imgs_idle= ["아기1_idle.png", "아기2_idle.png"]
-frist_growth_imgs=["반항기_여1_idle.png","반항기_여2_idle.png","반항기_남1_idle.png","반항기_남2_idle.png"]
-second_growth_imgs=["사춘기_여1.png","사춘기_남1.png"]
-final_growth_imgs=["성인_여1.png","성인_여2.png","성인_여3.png",
-                       "성인_남1.png","성인_남2.png","성인_남3.png"]
+#IDLE 사이즈 36*36
+frist_growth_imgs= image.load("IDLE반항기.png")
+second_growth_imgs= image.load("IDLE사춘기.png")
+final_growth_imgs= image.load("IDLE성인.png")
+
+chaImage = None
+chaImageX, chaImageY = 0,0
+chaState = 1
+growChaY= [-1,-1,-1]
 
 
 # 대사들..
@@ -125,8 +132,6 @@ checkdig1 = True
 
 
 #여러 이미지들...
-ddong =pygame.image.load('똥.png')
-ddongImo = pygame.image.load('똥이모지.png')
 loveImo = pygame.image.load('하트이모지.png')
 sleepImo = pygame.image.load('잠이모지.png')
 sleepButton = pygame.image.load('잠자기버튼.png')
@@ -139,6 +144,10 @@ showImos = None
 isImo = False
 imoCount = 0
 
+changeScreen = pygame.image.load('알선택후화면전환1.png')
+changSc = 99
+isSceenChange = [False,False,False]
+
 staminaImg = pygame.image.load('체력바_스테미너.png')
 staminaImgX = 0
 
@@ -150,10 +159,28 @@ interestingImgX = 0
 
 dayImg = pygame.image.load('날짜디데이.png')
 dayImgX = 0
+dayNum = 1
+
+timeImg = pygame.image.load('시간_아침.png')
 
 cha_x = 270
 cha_y = 350
 cha_speed = 3
+
+#똥 관련
+
+ddong = pygame.transform.scale(pygame.image.load('똥.png'), (23*1.5,20*1.5))
+ddongImo = pygame.image.load('똥이모지.png')
+ddonglist = []
+
+#벌레
+bug = pygame.image.load('벌레.png')
+buglist = []
+
+sc_frame = 0
+
+show_emotion = pygame.image.load('기분표시_1.png')
+
 
 def set_frame_rate(speed):
     scene_tick(clock, speed)
@@ -181,12 +208,20 @@ def fadeOut():
         isFade = True
 
 
-def reStart():
-    pass
+def changScreen():
+    global sc_frame, changSc
+    changeScreen_img = transform.scale(changeScreen, (1040 * 2.2, 128 * 2.2))
+    frame_width = 130 * 2.2
+    frame_height = 128 * 2.2
+    sc_frame_x = sc_frame * frame_width
+    change_screenFrame = changeScreen_img.subsurface((sc_frame_x, 0, frame_width, frame_height))
+    screen.blit(change_screenFrame, (160, 175))
+    sc_frame = (sc_frame + 1)
+    if (sc_frame == 7):
+        sc_frame = 0
+        return
 
-def update():
 
-    pass
 
 def event_machine():
     global running, shrinking, startScene, \
@@ -230,7 +265,9 @@ def event_machine():
                     if(staminaImgX>0 and staminaImgX < 500):
                         staminaImgX -= 100
                         isImo = True
-                    elif(staminaImgX== 0):
+                        x = random.randint(200, 400)
+                        ddonglist.append({"img": ddong, "pos": [x, cha_y + 35], "isShow": True, "ddongLoc" : ddong.get_rect(center=(x, cha_y + 35))})
+                    elif(staminaImgX == 0):
                         print('배불러.. 스트레스!')
 
                     pass
@@ -240,14 +277,15 @@ def event_machine():
                     showImos = pygame.transform.smoothscale(loveImo, (30, 30))
 
 
-                    if(staminaImgX<500):
+                    if(staminaImgX<=500):
                         staminaImgX += 100
                         isImo = True
-                        if (interestingImgX > 0 and interestingImgX < 500):
+                        if (interestingImgX > 0 and interestingImgX <= 500):
                             interestingImgX -= 100
                         elif(interestingImgX == 0):
                             print('더 안놀거임..스트레스!')
-
+                            if (hpImgX < 600):
+                                hpImgX += 100
 
                     pass
                 elif arrowrightLoc.collidepoint(event.pos):
@@ -262,6 +300,27 @@ def event_machine():
                     elif (nowRoom == restRoom_back):
                         nowRoom = mainRoom_back
                     print('왼쪽')
+
+
+                for ddongs in ddonglist:
+                    ddongLoc = ddong.get_rect(center = (ddongs["pos"][0],ddongs["pos"][1]))
+                    if ddongLoc.collidepoint(event.pos):
+                        print('똥 클릭!!')
+                        ddonglist.remove(ddongs)
+
+                for bugs in buglist:
+                    bugLoc = bug.get_rect(center = (bugs["pos"][0],bugs["pos"][1]))
+                    if bugLoc.collidepoint(event.pos):
+                        print('벌레 클릭!!')
+                        print(bugs["pos"][0])
+                        print(bugs["pos"][1])
+                        buglist.remove(bugs)
+                    if(bugs["pos"][1] > 550):
+                        buglist.remove(bugs)
+
+
+
+
 
         if event.type == SDL_KEYDOWN:
             if secondScene:
@@ -278,10 +337,17 @@ def event_machine():
                     print('s')
 
 
+
+isMusic = [False,False]
+
 # 애니메이션 루프
 while running:
-
-    print(timeCount)
+    if(isMusic[0] == False):
+        pygame.mixer.music.load("동물의_숲1.mp3")
+        pygame.mixer.music.set_volume(1.0)
+        # BGM 재생 (무한 반복: -1)
+        pygame.mixer.music.play(-1)
+        isMusic[0] = True
     event_machine()
 
     original_surface.blit(backGround, (0, 0))
@@ -329,49 +395,131 @@ while running:
             pass
 
     elif secondScene :
+        if (isMusic[1] == False):
+            pygame.mixer.music.load("동물의_숲2.mp3")
+            pygame.mixer.music.set_volume(1.0)
+            # BGM 재생 (무한 반복: -1)
+            pygame.mixer.music.play(-1)
+            isMusic[1] = True
         #print(selectEggNum)
-
+        #print(changSc)
         draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
                           selecFinalEggLoc, mainRoom_back, restRoom_back,nowRoom, baby_growth_imgs_idle, eggBrake, text_displayed, fontSmall
                           ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,morningTime,eveningTime,nightTime
                           ,dialog1,dialog1Loc,checkdig1,cha_x,cha_y,isImo, showImos, imoCount,presentTime
                           ,arrowleft,arrowleftLoc,arrowright,arrowrightLoc,staminaImg,staminaImgX
-                          ,isTextAni1,isShowTextAni,hpImgX,interestingImgX,interestingImg,hpImg,dayImg,dayImgX)
-        timeCount += 1
-        if (timeCount>0 and timeCount < 100):
-            presentTime = morningTime
-        elif(timeCount >= 100 and timeCount <250) :
-            presentTime = eveningTime
-        elif(timeCount >250 and timeCount < 350) :
-            presentTime = nightTime
-        elif(timeCount>350):
-            presentTime = morningTime
-            timeCount = 0
-
-            if(dayImgX<=702-78):
-                dayImgX += 78
-            if(dayImgX == 702):
-                dayImgX = 702
-                print('10번째날이 되었습니다~!')
+                          ,isTextAni1,isShowTextAni,hpImgX,interestingImgX,interestingImg,hpImg,dayImg,dayImgX
+                          ,ddong,ddonglist,chaImage,frist_growth_imgs,second_growth_imgs,final_growth_imgs,chaImageX, chaImageY,
+                          dayNum,chaState,growChaY,timeImg,buglist,bug,show_emotion)
 
         if eggBrake:
+
+            timeCount += 30
+            if (timeCount > 0 and timeCount < 160):
+                presentTime = morningTime
+                timeImg = pygame.image.load('시간_아침.png')
+                show_emotion = pygame.image.load('기분표시_1.png')
+            elif (timeCount >= 160 and timeCount < 300):
+                presentTime = eveningTime
+                timeImg = pygame.image.load('시간_저녁.png')
+            elif (timeCount > 300 and timeCount < 450):
+                presentTime = nightTime
+                timeImg = pygame.image.load('시간_새벽.png')
+                darkImg = pygame.image.load('밤배경_dark.png')
+                show_emotion = pygame.image.load('기분표시_3.png')
+                screen.blit(darkImg, (150, 160))
+                # 벌레 추가
+                if (timeCount % 20 == 0):
+                    bug_x = random.randint(200, 400)
+                    bug_y = random.randint(150, 175)
+                    buglist.append({"img": bug, "pos": [bug_x, bug_y], "isShow": True})
+
+                for bugs in buglist:
+                    if (bugs["pos"][0] + 50 > cha_x + 10 and
+                            bugs["pos"][0] < cha_x + 10 + 50 and
+                            bugs["pos"][1] + 50 > cha_y + 20 and
+                            bugs["pos"][1] < cha_y + 20 + 50):
+                        print('충돌이다다다')
+                        show_emotion = pygame.image.load('기분표시_4.png')
+                        print(bugs["pos"][0])
+                        print(bugs["pos"][1])
+                        if (hpImgX < 600):
+                            hpImgX += 100
+                        buglist.remove(bugs)
+
+            elif (timeCount > 450):
+
+                presentTime = morningTime
+                timeImg = pygame.image.load('시간_아침.png')
+                timeCount = 0
+
+
+
+                if (dayImgX <= 702 - 78):
+                    dayImgX += 78
+                    dayNum += 1
+                    if (dayNum > 1 and dayNum < 3):
+                        print('베이비상태')
+                        chaState = 1
+                    elif (dayNum >= 3 and dayNum < 6):
+                        if(dayNum == 3 and isSceenChange[0] == False):
+                            changSc = 1
+                            isSceenChange[0] = True
+
+
+                        print('반항기상태')
+                        if (growChaY[0] == -1):
+                            growChaY[0] = random.randint(0, 3)
+                            print('growCha[0] : ', growChaY[0])
+                        chaState = 2
+                        chaImage = frist_growth_imgs
+                    elif (dayNum >= 6 and dayNum < 9):
+                        if (dayNum == 6 and isSceenChange[1] == False):
+                            changSc = 1
+                            isSceenChange[1] = True
+                        print('사춘기상태')
+                        if (growChaY[1] == -1):
+                            growChaY[1] = random.randint(0, 3)
+                            print('growCha[1] : ', growChaY[1])
+                        chaState = 3
+                        chaImage = second_growth_imgs
+                    elif (dayNum >= 9):
+                        if (dayNum == dayNum and isSceenChange[2] == False):
+                            changSc = 1
+                            isSceenChange[2] = True
+                        dayNum = 10
+                        if (growChaY[2] == -1):
+                            growChaY[2] = random.randint(0, 3)
+                            print('growCha[2] : ', growChaY[2])
+                        chaState = 4
+                        chaImage = final_growth_imgs
+                        print('성인상태')
+                if (dayImgX == 702):
+                    dayImgX = 702
+                    print('10번째날이 되었습니다~!')
+            # 스테미너 깎이는 것.
             if (timeCount % 100 == 0):
                 if(staminaImgX<600):
                     staminaImgX += 100
                 if (interestingImgX < 600):
                     interestingImgX += 100
-                if (hpImgX < 600):
-                    hpImgX += 100
 
+
+            # 체력 깎이는 것..
+
+            # 똥 추가
+            if(timeCount % 150 == 0 ):
+                x = random.randint(200,400)
+                ddonglist.append({"img":ddong, "pos" : [x,cha_y + 35], "isShow": True})
 
         fadeOut()
         if (isFade):
             isFade = False
-            scene_speeds["secondScene"] = 10
+
 
         if eggBrake == True:
-            if isTextAni1 == True:
 
+            if isTextAni1 == True:
                 if eggBrakeindex < len(afterEggBrake_text[EggBrakeTextNum]) and EggBrakeTextNum < 3:
                     #print("hello")
                     breakegg_text_displayed += afterEggBrake_text[EggBrakeTextNum][eggBrakeindex]
@@ -385,6 +533,7 @@ while running:
                 if EggBrakeTextNum == 2 and eggBrakeindex == 24:
                     isShowTextAni = False
                     isTextAni1 = False
+                    scene_speeds["secondScene"] = 7
             #print(eggBrakeindex)
 
             if isImo == True:
