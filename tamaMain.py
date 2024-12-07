@@ -11,7 +11,8 @@ import sys
 
 from sdl2 import SDL_KEYDOWN, SDLK_a, SDLK_d, SDLK_w, SDLK_s
 
-from scene import scene_tick, draw_start_scene, draw_first_scene, scene_speeds, draw_second_scene  # scene.py에서 함수 가져오기
+from scene import (scene_tick, draw_start_scene, draw_first_scene, scene_speeds,
+                   draw_second_scene,draw_third_scene,draw_fourth_scene)  # scene.py에서 함수 가져오기
 
 # 초기화 및 기본 설정
 pygame.init()
@@ -45,8 +46,13 @@ first_context = False
 smallSize = 1.1
 shrink_speed = 10
 
+timeSpeed = 5
+
+
 selectEggNum = 99
 secondScene = False
+thirdScene = False
+fourthScene = False
 
 # 배경 및 버튼 이미지 불러오기
 backGround = pygame.image.load('배경1.png')
@@ -59,11 +65,15 @@ timeCount = 0
 
 backG_1 = pygame.image.load('도트배경.png')
 button1image = pygame.transform.scale(pygame.image.load('시작버튼.png'), (293 / 1.5, 91 / 1.5))
-button1Loc = button1image.get_rect(center=(screen_width // 2, 450))
+button1Loc = button1image.get_rect(center=(screen_width // 2, 320))
 button2image = pygame.transform.scale(pygame.image.load('게임종료.png'), (293 / 1.5, 91 / 1.5))
-button2Loc = button2image.get_rect(center=(screen_width // 2, 500))
+button2Loc = button2image.get_rect(center=(screen_width // 2, 370))
 titleImage = pygame.transform.scale(pygame.image.load('제목.png'), (450, 300))
 titleLoc = titleImage.get_rect(center=(screen_width // 2, 150))
+
+button3image = pygame.transform.scale(pygame.image.load('방법버튼.png'), (293 / 1.5, 91 / 1.5))
+button3Loc = button3image.get_rect(center=(screen_width // 2, 420))
+
 
 # 첫 번째 장면의 선택 이미지 및 알 이미지 불러오기
 firstChoice1 = pygame.transform.scale(pygame.image.load('1.png'), (598 / smallSize, 736 / smallSize))
@@ -89,7 +99,7 @@ changeEffectFrame = 13
 changeEffectLoc = changeEffect.get_rect(center=(target_width // 2, 0))
 selecEgg = False
  # 검은색 페이드
-isFade = False
+isFadeIn = False
 
 # 두번째 씬 (알 깨지고..~ 아기 태어나는 부분)
 mainRoom_back = pygame.transform.smoothscale(pygame.image.load("배경방1.png"), (313, 313))
@@ -127,7 +137,7 @@ growChaY= [-1,-1,-1]
 
 # 대사들..
 dialog1 = pygame.image.load('알깨주세요.png')
-dialog1Loc = dialog1.get_rect(center=(target_width // 2, 470))
+dialog1Loc = dialog1.get_rect(center=(target_width // 2, 300))
 checkdig1 = True
 
 
@@ -169,7 +179,7 @@ cha_speed = 3
 
 #똥 관련
 
-ddong = pygame.transform.scale(pygame.image.load('똥.png'), (23*1.5,20*1.5))
+ddong = pygame.transform.scale(pygame.image.load('똥.png'), (23*1.75,20*1.75))
 ddongImo = pygame.image.load('똥이모지.png')
 ddonglist = []
 
@@ -177,68 +187,99 @@ ddonglist = []
 bug = pygame.image.load('벌레.png')
 buglist = []
 
+dustImg = pygame.image.load('먼지.png')
+dustlist = []
+
+
 sc_frame = 0
 
 show_emotion = pygame.image.load('기분표시_1.png')
 
+walkBackGround = pygame.transform.smoothscale(image.load('배경_산책1.png'), (130 * 2.4, 130 *2.4))
+buttonWalk = image.load('버튼_산책.png')
+buttonWalkLoc = buttonEat.get_rect(center=(target_width//2 ,80))
 
 def set_frame_rate(speed):
     scene_tick(clock, speed)
 
+
+isFadeInEnd = False
+isFadeOut = False
 def fadeIn():
-    global changeEffectCurFrame, isFade
-    x = changeEffectCurFrame * 600
-    rect = pygame.Rect(x, 0, 600, 600)
-    screen.blit(changeEffect, (0, 0), rect)
-    if changeEffectCurFrame < 12:
-        changeEffectCurFrame = (changeEffectCurFrame + 1)
-    if changeEffectCurFrame == 12:
-        isFade = True
+    global changeEffectCurFrame, isFadeIn, isFadeOut,isFadeInEnd
+    isFadeIn = True
+    if(isFadeIn):
+        print(changeEffectCurFrame)
+        #print('fadein 시작')
+        x = changeEffectCurFrame * 600
+        rect = pygame.Rect(x, 0, 600, 600)
+        screen.blit(changeEffect, (0, 0), rect)
+        if changeEffectCurFrame < 11:
+            changeEffectCurFrame = (changeEffectCurFrame + 1)
+        if changeEffectCurFrame >= 11:
+            print(isFadeInEnd)
+            changeEffectCurFrame = (changeEffectCurFrame + 1) % 12
+            isFadeOut = True
+            isFadeInEnd = True
+            isFadeIn = False
+            changeEffectCurFrame = 0
+            #print('fadein 끝')
+            print(isFadeInEnd)
+            return
+
 
 
 def fadeOut():
-    global changeEffectCurFrame2,isFade
-    x = changeEffectCurFrame2 * 600
-    rect = pygame.Rect(x, 0, 600, 600)
-    screen.blit(changeEffect2, (0, 0), rect)
 
-    if changeEffectCurFrame2 < 12:
-        changeEffectCurFrame2 = (changeEffectCurFrame2 + 1)
-    if changeEffectCurFrame == 12:
-        isFade = True
-
-
-def changScreen():
-    global sc_frame, changSc
-    changeScreen_img = transform.scale(changeScreen, (1040 * 2.2, 128 * 2.2))
-    frame_width = 130 * 2.2
-    frame_height = 128 * 2.2
-    sc_frame_x = sc_frame * frame_width
-    change_screenFrame = changeScreen_img.subsurface((sc_frame_x, 0, frame_width, frame_height))
-    screen.blit(change_screenFrame, (160, 175))
-    sc_frame = (sc_frame + 1)
-    if (sc_frame == 7):
-        sc_frame = 0
-        return
+    global changeEffectCurFrame2,isFadeOut,isFadeIn,isFadeInEnd
+    if(isFadeOut):
+        #print('fadeout 시작')
+        print(changeEffectCurFrame2)
+        x = changeEffectCurFrame2 * 600
+        rect = pygame.Rect(x, 0, 600, 600)
+        screen.blit(changeEffect2, (0, 0), rect)
+        if changeEffectCurFrame2 < 12:
+            changeEffectCurFrame2 = (changeEffectCurFrame2 + 1)
+        if changeEffectCurFrame2 == 12:
+            print('fadeout 끝')
+            changeEffectCurFrame2 = 0
+            isFadeOut = False
+            isFadeIn = False
+            isFadeInEnd = False
+            return
 
 
+isWalking = False
+walk_cha_x = 150
+isDead = False
+show_gameRule = False
 
 def event_machine():
     global running, shrinking, startScene, \
         secondScene,firstScene, selectEggNum, selecEgg,eggBrake, isTextAni1,checkdig1,\
-        showImos, cha_x,cha_y,isImo,imoCount,nowRoom,staminaImgX,interestingImgX,hpImgX
+        showImos, cha_x,cha_y,isImo,imoCount,nowRoom,staminaImgX,interestingImgX,hpImgX,\
+        thirdScene,buttonWalkLoc,buttonWalk,isWalking,walk_cha_x,isDead,button2Loc,dust,dustlist,timeCount,show_gameRule
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if button1Loc.collidepoint(event.pos):
-                shrinking = True
-                startScene = False
-                firstScene = True
-            elif button2Loc.collidepoint(event.pos):
-                running = False
+            if startScene :
+                if button1Loc.collidepoint(event.pos):
+                    shrinking = True
+                    startScene = False
+                    firstScene = True
+
+                elif button2Loc.collidepoint(event.pos):
+                    running = False
+                elif button3Loc.collidepoint(event.pos):
+                    show_gameRule = True
+
+
+                else:
+                    show_gameRule = False
+                    pass
 
             if firstScene:
                 if egg1Loc.collidepoint(event.pos):
@@ -262,7 +303,7 @@ def event_machine():
                     print("밥주기")
                     showImos = pygame.transform.smoothscale(loveImo, (30,30))
 
-                    if(staminaImgX>0 and staminaImgX < 500):
+                    if(staminaImgX>0 and staminaImgX <= 500):
                         staminaImgX -= 100
                         isImo = True
                         x = random.randint(200, 400)
@@ -277,7 +318,7 @@ def event_machine():
                     showImos = pygame.transform.smoothscale(loveImo, (30, 30))
 
 
-                    if(staminaImgX<=500):
+                    if(staminaImgX<500):
                         staminaImgX += 100
                         isImo = True
                         if (interestingImgX > 0 and interestingImgX <= 500):
@@ -287,6 +328,12 @@ def event_machine():
                             if (hpImgX < 600):
                                 hpImgX += 100
 
+                elif chaState >=3 and buttonWalkLoc.collidepoint(event.pos):
+                    isWalking = True
+                    print('산책가자')
+                    walk_cha_x = 150
+                    nowRoom = walkBackGround
+                    timeCount = 215
                     pass
                 elif arrowrightLoc.collidepoint(event.pos):
                     if(nowRoom == mainRoom_back):
@@ -303,42 +350,43 @@ def event_machine():
 
 
                 for ddongs in ddonglist:
-                    ddongLoc = ddong.get_rect(center = (ddongs["pos"][0],ddongs["pos"][1]))
+                    ddongLoc = ddong.get_rect(topleft = (ddongs["pos"][0],ddongs["pos"][1]))
                     if ddongLoc.collidepoint(event.pos):
                         print('똥 클릭!!')
                         ddonglist.remove(ddongs)
 
                 for bugs in buglist:
-                    bugLoc = bug.get_rect(center = (bugs["pos"][0],bugs["pos"][1]))
+                    bugLoc = bug.get_rect(topleft = (bugs["pos"][0],bugs["pos"][1]))
                     if bugLoc.collidepoint(event.pos):
                         print('벌레 클릭!!')
-                        print(bugs["pos"][0])
-                        print(bugs["pos"][1])
+                        #print(bugs["pos"][0])
+                        #print(bugs["pos"][1])
                         buglist.remove(bugs)
                     if(bugs["pos"][1] > 550):
                         buglist.remove(bugs)
 
+                for dusts in dustlist:
+                    dustLoc = dustImg.get_rect(topleft = (dusts["pos"][0],dusts["pos"][1]))
+                    if dustLoc.collidepoint(event.pos):
+                        print('먼지 클릭!!')
+                        dustlist.remove(dusts)
+
+            if thirdScene:
+                button2Loc = button2image.get_rect(center=(285, 500))
+                if button2Loc.collidepoint(event.pos):
+                    running = False
+
+            if fourthScene:
+                button2Loc = button2image.get_rect(center=(285, 500))
+                if button2Loc.collidepoint(event.pos):
+                    running = False
 
 
 
 
-        if event.type == SDL_KEYDOWN:
-            if secondScene:
-                if event.key == SDLK_a:
-                    print('a')
-                    cha_x -= cha_speed
-                if event.key == SDLK_d:
-                    print('d')
-                    cha_x += cha_speed
-                if event.key == SDLK_w:
-                    print('w')
-                    # cha_y += cha_speed
-                if event.key == SDLK_s:
-                    print('s')
 
 
-
-isMusic = [False,False]
+isMusic = [False,False,False,False]
 
 # 애니메이션 루프
 while running:
@@ -372,8 +420,10 @@ while running:
     # 화면 그리기
     screen.fill(WHITE)
     if startScene:
-        draw_start_scene(screen, firstChoice2Loc, firstChoice2, backGround, button1image, button1Loc, button2image, button2Loc, titleImage, titleLoc)
+        draw_start_scene(screen, firstChoice2Loc, firstChoice2, backGround, button1image, button1Loc,
+                         button2image, button2Loc, titleImage, titleLoc, button3Loc,button3image,show_gameRule)
         scene_tick(clock, "startScene")
+        #thirdScene = True
 
 
 
@@ -386,11 +436,14 @@ while running:
         scene_tick(clock, "firstScene")
 
         if (selecEgg):
+
             fadeIn()
-            if(isFade):
+
+            if(isFadeInEnd):
                 firstScene = False
                 secondScene = True
-                isFade = False
+                isFadeInEnd = False
+
             clock.tick(1000)
             pass
 
@@ -403,6 +456,7 @@ while running:
             isMusic[1] = True
         #print(selectEggNum)
         #print(changSc)
+
         draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1, egg2, egg3,
                           selecFinalEggLoc, mainRoom_back, restRoom_back,nowRoom, baby_growth_imgs_idle, eggBrake, text_displayed, fontSmall
                           ,breakegg_text_displayed,buttonEat,buttonPlay,buttonEatLoc,buttonPlayLoc,morningTime,eveningTime,nightTime
@@ -410,29 +464,13 @@ while running:
                           ,arrowleft,arrowleftLoc,arrowright,arrowrightLoc,staminaImg,staminaImgX
                           ,isTextAni1,isShowTextAni,hpImgX,interestingImgX,interestingImg,hpImg,dayImg,dayImgX
                           ,ddong,ddonglist,chaImage,frist_growth_imgs,second_growth_imgs,final_growth_imgs,chaImageX, chaImageY,
-                          dayNum,chaState,growChaY,timeImg,buglist,bug,show_emotion)
+                          dayNum,chaState,growChaY,timeImg,buglist,bug,show_emotion, thirdScene,
+                          buttonWalk,buttonWalkLoc,isWalking,walk_cha_x,dustlist,dustImg,isDead)
+
 
         if eggBrake:
 
-            timeCount += 30
-            if (timeCount > 0 and timeCount < 160):
-                presentTime = morningTime
-                timeImg = pygame.image.load('시간_아침.png')
-                show_emotion = pygame.image.load('기분표시_1.png')
-            elif (timeCount >= 160 and timeCount < 300):
-                presentTime = eveningTime
-                timeImg = pygame.image.load('시간_저녁.png')
-            elif (timeCount > 300 and timeCount < 450):
-                presentTime = nightTime
-                timeImg = pygame.image.load('시간_새벽.png')
-                darkImg = pygame.image.load('밤배경_dark.png')
-                show_emotion = pygame.image.load('기분표시_3.png')
-                screen.blit(darkImg, (150, 160))
-                # 벌레 추가
-                if (timeCount % 20 == 0):
-                    bug_x = random.randint(200, 400)
-                    bug_y = random.randint(150, 175)
-                    buglist.append({"img": bug, "pos": [bug_x, bug_y], "isShow": True})
+            if(not isWalking):
 
                 for bugs in buglist:
                     if (bugs["pos"][0] + 50 > cha_x + 10 and
@@ -441,80 +479,139 @@ while running:
                             bugs["pos"][1] < cha_y + 20 + 50):
                         print('충돌이다다다')
                         show_emotion = pygame.image.load('기분표시_4.png')
-                        print(bugs["pos"][0])
-                        print(bugs["pos"][1])
+                        #print(bugs["pos"][0])
+                        #print(bugs["pos"][1])
                         if (hpImgX < 600):
                             hpImgX += 100
+                        if (hpImgX == 600):
+                            hpImgX = 600
+                            staminaImgX = 600
+                            interestingImgX = 600
+
                         buglist.remove(bugs)
 
-            elif (timeCount > 450):
+                if (timeCount > 0 and timeCount < 100):
+                    presentTime = morningTime
+                    timeImg = pygame.image.load('시간_아침.png')
+                    show_emotion = pygame.image.load('기분표시_1.png')
+                elif (timeCount >= 100 and timeCount < 230):
+                    presentTime = eveningTime
+                    timeImg = pygame.image.load('시간_저녁.png')
+                elif (timeCount >= 230 and timeCount < 350):
+                    presentTime = nightTime
+                    timeImg = pygame.image.load('시간_새벽.png')
+                    darkImg = pygame.image.load('밤배경_dark.png')
+                    show_emotion = pygame.image.load('기분표시_3.png')
+                    screen.blit(darkImg, (150, 160))
+                    # 벌레 추가
+                    if (timeCount % (timeSpeed * 6) == 0):
+                        bug_x = random.randint(200, 400)
+                        bug_y = random.randint(150, 175)
+                        buglist.append({"img": bug, "pos": [bug_x, bug_y], "isShow": True})
 
-                presentTime = morningTime
-                timeImg = pygame.image.load('시간_아침.png')
-                timeCount = 0
+
+
+                elif (timeCount >= 350):
+
+                    presentTime = morningTime
+                    timeImg = pygame.image.load('시간_아침.png')
+                    timeCount = 0
 
 
 
-                if (dayImgX <= 702 - 78):
-                    dayImgX += 78
-                    dayNum += 1
-                    if (dayNum > 1 and dayNum < 3):
-                        print('베이비상태')
-                        chaState = 1
-                    elif (dayNum >= 3 and dayNum < 6):
-                        if(dayNum == 3 and isSceenChange[0] == False):
-                            changSc = 1
-                            isSceenChange[0] = True
+                    if (dayImgX <= 702 - (78*3)and dayNum <=8):
+                        dayImgX += 78
+                        dayNum += 1
+                        if (dayNum > 1 and dayNum < 3):
+                            print('베이비상태')
+                            chaState = 1
+                        elif (dayNum >= 3 and dayNum < 5):
+                            chaState = 2
+                            chaImage = frist_growth_imgs
+                            print('반항기상태')
+
+                        elif (dayNum >= 5 and dayNum < 7):
+                            chaState = 3
+                            chaImage = second_growth_imgs
+
+                            print('사춘기상태')
+                        elif (dayNum >= 7):
+                            chaState = 4
+                            chaImage = final_growth_imgs
+
+                            print('성인상태')
+
+                    if (dayImgX >= (78*7)):
+                        dayImgX = (78*7)
+                        print('8번째날이 되었습니다~!')
+                        print(dayNum)
+
+            if(dayNum < 8 and not isWalking and not isDead):
+                timeCount += timeSpeed
+
+            if(timeCount % (timeSpeed * 8) == 0 and staminaImgX == 500):
+                hpImgX += 100
+                if (hpImgX == 600):
+                    hpImgX = 600
+                    staminaImgX = 600
+                    interestingImgX = 600
 
 
-                        print('반항기상태')
-                        if (growChaY[0] == -1):
-                            growChaY[0] = random.randint(0, 3)
-                            print('growCha[0] : ', growChaY[0])
-                        chaState = 2
-                        chaImage = frist_growth_imgs
-                    elif (dayNum >= 6 and dayNum < 9):
-                        if (dayNum == 6 and isSceenChange[1] == False):
-                            changSc = 1
-                            isSceenChange[1] = True
-                        print('사춘기상태')
-                        if (growChaY[1] == -1):
-                            growChaY[1] = random.randint(0, 3)
-                            print('growCha[1] : ', growChaY[1])
-                        chaState = 3
-                        chaImage = second_growth_imgs
-                    elif (dayNum >= 9):
-                        if (dayNum == dayNum and isSceenChange[2] == False):
-                            changSc = 1
-                            isSceenChange[2] = True
-                        dayNum = 10
-                        if (growChaY[2] == -1):
-                            growChaY[2] = random.randint(0, 3)
-                            print('growCha[2] : ', growChaY[2])
-                        chaState = 4
-                        chaImage = final_growth_imgs
-                        print('성인상태')
-                if (dayImgX == 702):
-                    dayImgX = 702
-                    print('10번째날이 되었습니다~!')
+            if(isWalking):
+                walk_cha_x += 8
+                if(walk_cha_x > 420):
+                    isWalking = False
+                    walk_cha_x = 150
+                    nowRoom = mainRoom_back
+                    if (interestingImgX > 0 and interestingImgX <= 500):
+                        interestingImgX = 0
+
+
+            if(dayNum == 8):
+                #print(dayNum)
+                fadeIn()
+                if (isFadeInEnd):
+                    secondScene = False
+                    thirdScene = True
+                    isFadeInEnd = False
+
             # 스테미너 깎이는 것.
-            if (timeCount % 100 == 0):
-                if(staminaImgX<600):
-                    staminaImgX += 100
-                if (interestingImgX < 600):
+            if (timeCount % (timeSpeed * 33) == 0 and not isDead and dayNum < 8):
+                if(staminaImgX<=500):
+                    if(staminaImgX >= 500):
+                        staminaImgX = 500
+                    else:
+                        staminaImgX += 100
+                if (interestingImgX < 500):
                     interestingImgX += 100
 
 
             # 체력 깎이는 것..
 
             # 똥 추가
-            if(timeCount % 150 == 0 ):
+            if(timeCount % (timeSpeed * 27) == 0  and not isWalking and dayNum < 8):
                 x = random.randint(200,400)
                 ddonglist.append({"img":ddong, "pos" : [x,cha_y + 35], "isShow": True})
 
-        fadeOut()
-        if (isFade):
-            isFade = False
+            # 먼지 추가
+            if(timeCount % (timeSpeed * 13) == 0 and not isWalking and dayNum < 8):
+                dustx = random.randint(150, 400)
+                dusty = random.randint(200,400)
+                dustlist.append({"img": dustImg, "pos": [dustx, dusty], "isShow": True})
+
+        if(isFadeOut):
+            fadeOut()
+
+
+
+        if(isDead):
+            secondScene = False
+            fourthScene = True
+
+        if (hpImgX == 600):
+            staminaImgX = 600
+            interestingImgX = 600
+            isDead = True
 
 
         if eggBrake == True:
@@ -546,7 +643,30 @@ while running:
         scene_tick(clock, "secondScene")
         pass
 
+    if thirdScene and not isDead:
+        if (isMusic[2] == False):
+            pygame.mixer.music.load("ooh.mp3")
+            pygame.mixer.music.set_volume(1.0)
+            # BGM 재생 (무한 반복: -1)
+            pygame.mixer.music.play(-1)
+            isMusic[2] = True
+        chaImage = pygame.image.load('GROW성인.png')
+        draw_third_scene(screen, thirdScene,backG_1,growChaY,chaImage,cha_x,cha_y,button2Loc,button2image)
 
+        fadeOut()
+
+        scene_tick(clock, "thirdScene")
+
+    if fourthScene and isDead:
+        if (isMusic[3] == False):
+            pygame.mixer.music.load("죽음.mp3")
+            pygame.mixer.music.set_volume(1.0)
+            # BGM 재생 (무한 반복: -1)
+            pygame.mixer.music.play(-1)
+            isMusic[3] = True
+
+        draw_fourth_scene(screen, backG_1,button2image,button2Loc)
+        scene_tick(clock, "fourthScene")
 
 
     pygame.display.flip()
