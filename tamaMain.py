@@ -30,8 +30,8 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 # 색상, 텍스트 및 글꼴 설정
 WHITE = (255, 255, 255)
-font = pygame.font.Font('NeoDunggeunmoPro-Regular.ttf', 25)
-fontSmall = pygame.font.Font('NeoDunggeunmoPro-Regular.ttf', 22)
+font = pygame.font.Font('./resource/NeoDunggeunmoPro-Regular.ttf', 25)
+fontSmall = pygame.font.Font('./resource/NeoDunggeunmoPro-Regular.ttf', 22)
 text1 = "당신의 다마고치를 선택해주세요!"
 text_displayed = ""
 index = 0
@@ -46,7 +46,7 @@ first_context = False
 smallSize = 1.1
 shrink_speed = 10
 
-timeSpeed = 5
+timeSpeed = 3
 
 
 selectEggNum = 99
@@ -55,44 +55,44 @@ thirdScene = False
 fourthScene = False
 
 # 배경 및 버튼 이미지 불러오기
-backGround = pygame.image.load('배경1.png')
-morningTime = pygame.image.load('아침배경.png')
-eveningTime = pygame.image.load('저녁배경.png')
-nightTime = pygame.image.load('밤배경.png')
+backGround = pygame.image.load('./resource/배경1.png')
+morningTime = pygame.image.load('./resource/아침배경.png')
+eveningTime = pygame.image.load('./resource/저녁배경.png')
+nightTime = pygame.image.load('./resource/밤배경.png')
 presentTime = morningTime
 
 timeCount = 0
 
-backG_1 = pygame.image.load('도트배경.png')
-button1image = pygame.transform.scale(pygame.image.load('시작버튼.png'), (293 / 1.5, 91 / 1.5))
+backG_1 = pygame.image.load('./resource/도트배경.png')
+button1image = pygame.transform.scale(pygame.image.load('./resource/시작버튼.png'), (293 / 1.5, 91 / 1.5))
 button1Loc = button1image.get_rect(center=(screen_width // 2, 320))
-button2image = pygame.transform.scale(pygame.image.load('게임종료.png'), (293 / 1.5, 91 / 1.5))
+button2image = pygame.transform.scale(pygame.image.load('./resource/게임종료.png'), (293 / 1.5, 91 / 1.5))
 button2Loc = button2image.get_rect(center=(screen_width // 2, 370))
-titleImage = pygame.transform.scale(pygame.image.load('제목.png'), (450, 300))
+titleImage = pygame.transform.scale(pygame.image.load('./resource/제목.png'), (450, 300))
 titleLoc = titleImage.get_rect(center=(screen_width // 2, 150))
 
-button3image = pygame.transform.scale(pygame.image.load('방법버튼.png'), (293 / 1.5, 91 / 1.5))
+button3image = pygame.transform.scale(pygame.image.load('./resource/방법버튼.png'), (293 / 1.5, 91 / 1.5))
 button3Loc = button3image.get_rect(center=(screen_width // 2, 420))
 
 
 # 첫 번째 장면의 선택 이미지 및 알 이미지 불러오기
-firstChoice1 = pygame.transform.scale(pygame.image.load('1.png'), (598 / smallSize, 736 / smallSize))
+firstChoice1 = pygame.transform.scale(pygame.image.load('./resource/1.png'), (598 / smallSize, 736 / smallSize))
 firstChoice1Loc = firstChoice1.get_rect(center=(target_width // 2, 300))
-firstChoice2 = pygame.transform.scale(pygame.image.load('3.png'), (598 / smallSize, 736 / smallSize))
+firstChoice2 = pygame.transform.scale(pygame.image.load('./resource/3.png'), (598 / smallSize, 736 / smallSize))
 firstChoice2Loc = firstChoice2.get_rect(center=(target_width // 2, 300))
 
-egg_imgs = ["알1.png","알2.png","알3.png"]
 
-egg1 = pygame.image.load('알1.png')
+
+egg1 = pygame.image.load('./resource/알1.png')
 egg1Loc = egg1.get_rect(center=(target_width // 2 - 150, 300))
-egg2 = pygame.image.load('알2.png')
+egg2 = pygame.image.load('./resource/알2.png')
 egg2Loc = egg2.get_rect(center=(target_width // 2, 300))
-egg3 = pygame.image.load('알3.png')
+egg3 = pygame.image.load('./resource/알3.png')
 egg3Loc = egg3.get_rect(center=(target_width // 2 + 150, 300))
 selecFinalEggLoc = egg2.get_rect(center=(target_width // 2, 400))
 
-changeEffect = image.load('페이드인아웃.png')
-changeEffect2 = image.load('페이드아웃.png')
+changeEffect = image.load('./resource/페이드인아웃.png')
+changeEffect2 = image.load('./resource/페이드아웃.png')
 changeEffectCurFrame = 0
 changeEffectCurFrame2 = 0
 changeEffectFrame = 13
@@ -102,8 +102,8 @@ selecEgg = False
 isFadeIn = False
 
 # 두번째 씬 (알 깨지고..~ 아기 태어나는 부분)
-mainRoom_back = pygame.transform.smoothscale(pygame.image.load("배경방1.png"), (313, 313))
-restRoom_back = pygame.transform.smoothscale(pygame.image.load('화장실.png'), (313, 313))
+mainRoom_back = pygame.transform.smoothscale(pygame.image.load("./resource/배경방1.png"), (313, 313))
+restRoom_back = pygame.transform.smoothscale(pygame.image.load('./resource/화장실.png'), (313, 313))
 
 nowRoom = mainRoom_back
 
@@ -117,17 +117,17 @@ eggBrakeindex = 0
 EggBrakeTextNum = 0
 isShowTextAni = True
 
-buttonEat = image.load('밥주기버튼.png')
+buttonEat = image.load('./resource/밥주기버튼.png')
 buttonEatLoc = buttonEat.get_rect(center=(target_width//2 - 70,80))
-buttonPlay = image.load('놀아주기버튼.png')
+buttonPlay = image.load('./resource/놀아주기버튼.png')
 buttonPlayLoc = buttonEat.get_rect(center=(target_width//2 + 70,80))
 
 # 성장별 모습
-baby_growth_imgs_idle= ["아기1_idle.png", "아기2_idle.png"]
+baby_growth_imgs_idle= ["./resource/아기1_idle.png", "./resource/아기2_idle.png"]
 #IDLE 사이즈 36*36
-frist_growth_imgs= image.load("IDLE반항기.png")
-second_growth_imgs= image.load("IDLE사춘기.png")
-final_growth_imgs= image.load("IDLE성인.png")
+frist_growth_imgs= image.load("./resource/IDLE반항기.png")
+second_growth_imgs= image.load("./resource/IDLE사춘기.png")
+final_growth_imgs= image.load("./resource/IDLE성인.png")
 
 chaImage = None
 chaImageX, chaImageY = 0,0
@@ -136,42 +136,42 @@ growChaY= [-1,-1,-1]
 
 
 # 대사들..
-dialog1 = pygame.image.load('알깨주세요.png')
+dialog1 = pygame.image.load('./resource/알깨주세요.png')
 dialog1Loc = dialog1.get_rect(center=(target_width // 2, 300))
 checkdig1 = True
 
 
 #여러 이미지들...
-loveImo = pygame.image.load('하트이모지.png')
-sleepImo = pygame.image.load('잠이모지.png')
-sleepButton = pygame.image.load('잠자기버튼.png')
-sofa = pygame.image.load('소파.png')
-arrowleft = pygame.image.load('화살표1.png')
+loveImo = pygame.image.load('./resource/하트이모지.png')
+sleepImo = pygame.image.load('./resource/잠이모지.png')
+sleepButton = pygame.image.load('./resource/잠자기버튼.png')
+sofa = pygame.image.load('./resource/소파.png')
+arrowleft = pygame.image.load('./resource/화살표1.png')
 arrowleftLoc = arrowleft.get_rect(center=(target_width//2 - 200,350))
-arrowright = pygame.image.load('화살표2.png')
+arrowright = pygame.image.load('./resource/화살표2.png')
 arrowrightLoc = arrowright.get_rect(center=(target_width//2 + 200,350))
 showImos = None
 isImo = False
 imoCount = 0
 
-changeScreen = pygame.image.load('알선택후화면전환1.png')
+changeScreen = pygame.image.load('./resource/알선택후화면전환1.png')
 changSc = 99
 isSceenChange = [False,False,False]
 
-staminaImg = pygame.image.load('체력바_스테미너.png')
+staminaImg = pygame.image.load('./resource/체력바_스테미너.png')
 staminaImgX = 0
 
-hpImg = pygame.image.load('체력바_체력.png')
+hpImg = pygame.image.load('./resource/체력바_체력.png')
 hpImgX = 0
 
-interestingImg = pygame.image.load('체력바_흥미.png')
+interestingImg = pygame.image.load('./resource/체력바_흥미.png')
 interestingImgX = 0
 
-dayImg = pygame.image.load('날짜디데이.png')
+dayImg = pygame.image.load('./resource/날짜디데이.png')
 dayImgX = 0
 dayNum = 1
 
-timeImg = pygame.image.load('시간_아침.png')
+timeImg = pygame.image.load('./resource/시간_아침.png')
 
 cha_x = 270
 cha_y = 350
@@ -179,24 +179,24 @@ cha_speed = 3
 
 #똥 관련
 
-ddong = pygame.transform.scale(pygame.image.load('똥.png'), (23*1.75,20*1.75))
-ddongImo = pygame.image.load('똥이모지.png')
+ddong = pygame.transform.scale(pygame.image.load('./resource/똥.png'), (23*1.75,20*1.75))
+ddongImo = pygame.image.load('./resource/똥이모지.png')
 ddonglist = []
 
 #벌레
-bug = pygame.image.load('벌레.png')
+bug = pygame.image.load('./resource/벌레.png')
 buglist = []
 
-dustImg = pygame.image.load('먼지.png')
+dustImg = pygame.image.load('./resource/먼지.png')
 dustlist = []
 
 
 sc_frame = 0
 
-show_emotion = pygame.image.load('기분표시_1.png')
+show_emotion = pygame.image.load('./resource/기분표시_1.png')
 
-walkBackGround = pygame.transform.smoothscale(image.load('배경_산책1.png'), (130 * 2.4, 130 *2.4))
-buttonWalk = image.load('버튼_산책.png')
+walkBackGround = pygame.transform.smoothscale(image.load('./resource/배경_산책1.png'), (130 * 2.4, 130 *2.4))
+buttonWalk = image.load('./resource/버튼_산책.png')
 buttonWalkLoc = buttonEat.get_rect(center=(target_width//2 ,80))
 
 def set_frame_rate(speed):
@@ -391,7 +391,7 @@ isMusic = [False,False,False,False]
 # 애니메이션 루프
 while running:
     if(isMusic[0] == False):
-        pygame.mixer.music.load("동물의_숲1.mp3")
+        pygame.mixer.music.load("./resource/동물의_숲1.mp3")
         pygame.mixer.music.set_volume(1.0)
         # BGM 재생 (무한 반복: -1)
         pygame.mixer.music.play(-1)
@@ -449,7 +449,7 @@ while running:
 
     elif secondScene :
         if (isMusic[1] == False):
-            pygame.mixer.music.load("동물의_숲2.mp3")
+            pygame.mixer.music.load("./resource/동물의_숲2.mp3")
             pygame.mixer.music.set_volume(1.0)
             # BGM 재생 (무한 반복: -1)
             pygame.mixer.music.play(-1)
@@ -478,7 +478,7 @@ while running:
                             bugs["pos"][1] + 50 > cha_y + 20 and
                             bugs["pos"][1] < cha_y + 20 + 50):
                         print('충돌이다다다')
-                        show_emotion = pygame.image.load('기분표시_4.png')
+                        show_emotion = pygame.image.load('./resource/기분표시_4.png')
                         #print(bugs["pos"][0])
                         #print(bugs["pos"][1])
                         if (hpImgX < 600):
@@ -492,16 +492,16 @@ while running:
 
                 if (timeCount > 0 and timeCount < 100):
                     presentTime = morningTime
-                    timeImg = pygame.image.load('시간_아침.png')
-                    show_emotion = pygame.image.load('기분표시_1.png')
+                    timeImg = pygame.image.load('./resource/시간_아침.png')
+                    show_emotion = pygame.image.load('./resource/기분표시_1.png')
                 elif (timeCount >= 100 and timeCount < 230):
                     presentTime = eveningTime
-                    timeImg = pygame.image.load('시간_저녁.png')
+                    timeImg = pygame.image.load('./resource/시간_저녁.png')
                 elif (timeCount >= 230 and timeCount < 350):
                     presentTime = nightTime
-                    timeImg = pygame.image.load('시간_새벽.png')
-                    darkImg = pygame.image.load('밤배경_dark.png')
-                    show_emotion = pygame.image.load('기분표시_3.png')
+                    timeImg = pygame.image.load('./resource/시간_새벽.png')
+                    darkImg = pygame.image.load('./resource/밤배경_dark.png')
+                    show_emotion = pygame.image.load('./resource/기분표시_3.png')
                     screen.blit(darkImg, (150, 160))
                     # 벌레 추가
                     if (timeCount % (timeSpeed * 6) == 0):
@@ -514,7 +514,7 @@ while running:
                 elif (timeCount >= 350):
 
                     presentTime = morningTime
-                    timeImg = pygame.image.load('시간_아침.png')
+                    timeImg = pygame.image.load('./resource/시간_아침.png')
                     timeCount = 0
 
 
@@ -645,12 +645,12 @@ while running:
 
     if thirdScene and not isDead:
         if (isMusic[2] == False):
-            pygame.mixer.music.load("ooh.mp3")
+            pygame.mixer.music.load("./resource/ooh.mp3")
             pygame.mixer.music.set_volume(1.0)
             # BGM 재생 (무한 반복: -1)
             pygame.mixer.music.play(-1)
             isMusic[2] = True
-        chaImage = pygame.image.load('GROW성인.png')
+        chaImage = pygame.image.load('./resource/GROW성인.png')
         draw_third_scene(screen, thirdScene,backG_1,growChaY,chaImage,cha_x,cha_y,button2Loc,button2image)
 
         fadeOut()
@@ -659,7 +659,7 @@ while running:
 
     if fourthScene and isDead:
         if (isMusic[3] == False):
-            pygame.mixer.music.load("죽음.mp3")
+            pygame.mixer.music.load("./resource/죽음.mp3")
             pygame.mixer.music.set_volume(1.0)
             # BGM 재생 (무한 반복: -1)
             pygame.mixer.music.play(-1)

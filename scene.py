@@ -27,9 +27,9 @@ def scene_tick(clock, scene_name):
     speed = scene_speeds.get(scene_name, 60)  # 기본값 60 프레임
     clock.tick(speed)
 
-backOverlay1 = image.load('배경오버레이1.png')
-backOverlay2 = image.load('배경오버레이2.png')
-gameRule = image.load('게임방법.png')
+backOverlay1 = image.load('./resource/배경오버레이1.png')
+backOverlay2 = image.load('./resource/배경오버레이2.png')
+gameRule = image.load('./resource/게임방법.png')
 tempStartSceneCount = 0
 # 장면별 화면 그리기 함수
 def draw_start_scene(screen, firstChoice2Loc, firstChoice2, backGround, button1image, button1Loc,
@@ -109,18 +109,18 @@ def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1,
         screen.blit(nowRoom, (145, 175))
 
     if selectEggNum == 1:
-        egg1 = image.load("알1_깨짐.png")
-        baby_idle = image.load("아기1_idle.png")
+        egg1 = image.load("./resource/알1_깨짐.png")
+        baby_idle = image.load("./resource/아기1_idle.png")
         baby = 1
         pass
     elif selectEggNum == 2:
-        egg1 = image.load("알2_깨짐.png")
-        baby_idle = image.load("아기1_idle.png")
+        egg1 = image.load("./resource/알2_깨짐.png")
+        baby_idle = image.load("./resource/아기1_idle.png")
         baby = 1
         pass
     elif selectEggNum == 3:
-        egg1 = image.load("알3_깨짐.png")
-        baby_idle = image.load("아기2_idle.png")
+        egg1 = image.load("./resource/알3_깨짐.png")
+        baby_idle = image.load("./resource/아기2_idle.png")
         baby = 2
         pass
 
@@ -156,9 +156,9 @@ def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1,
         if(chaState == 1):
             if presentTime == nightTime :
                 if(baby == 1):
-                    character_image = transform.scale(image.load('아기1_sleep.png'), (204 * 2, 54 * 2))
+                    character_image = transform.scale(image.load('./resource/아기1_sleep.png'), (204 * 2, 54 * 2))
                 elif(baby == 2):
-                    character_image = transform.scale(image.load('아기2_sleep.png'), (204 * 2, 54 * 2))
+                    character_image = transform.scale(image.load('./resource/아기2_sleep.png'), (204 * 2, 54 * 2))
             else:
                 character_image = transform.scale(baby_idle, (204 * 2, 54 * 2))
             frame_width = 34 * 2
@@ -171,9 +171,9 @@ def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1,
 
         elif(chaState == 2):
             if presentTime == nightTime:
-                character_image = transform.scale(image.load('SLEEP반항기.png'), (144 * 2, 144 * 2))
+                character_image = transform.scale(image.load('./resource/SLEEP반항기.png'), (144 * 2, 144 * 2))
             else:
-                character_image = transform.scale(image.load('IDLE반항기.png'), (144 * 2, 144 * 2))
+                character_image = transform.scale(image.load('./resource/IDLE반항기.png'), (144 * 2, 144 * 2))
 
             if (growChaY[0] == -1):
                 frame = 0
@@ -193,7 +193,7 @@ def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1,
         elif (chaState == 3):
             if(not isWalking):
                 if presentTime == nightTime:
-                    character_image = transform.scale(image.load('SLEEP사춘기.png'), (144 * 2.2, 144 * 2.2))
+                    character_image = transform.scale(image.load('./resource/SLEEP사춘기.png'), (144 * 2.2, 144 * 2.2))
                 else:
                     character_image = transform.scale(chaImage, (144 * 2.2, 144 * 2.2))
 
@@ -213,7 +213,7 @@ def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1,
                 screen.blit(character_frame, (cha_x, cha_y))
                 frame = (frame + 1) % 4
             elif (isWalking):
-                character_image = transform.scale(image.load('WALK사춘기.png'), (144 * 2, 144 * 2))
+                character_image = transform.scale(image.load('./resource/WALK사춘기.png'), (144 * 2, 144 * 2))
                 wk_frame_width = 36 * 2
                 wk_frame_height = 36 * 2
 
@@ -227,7 +227,7 @@ def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1,
         elif (chaState == 4):
             if (not isWalking):
                 if presentTime == nightTime:
-                    character_image = transform.scale(image.load('SLEEP성인.png'), (144 * 2.3, 144 * 2.3))
+                    character_image = transform.scale(image.load('./resource/SLEEP성인.png'), (144 * 2.3, 144 * 2.3))
                 else:
                     character_image = transform.scale(chaImage, (144 * 2.3, 144 * 2.3))
 
@@ -248,7 +248,7 @@ def draw_second_scene(screen, firstChoice2, firstChoice2Loc, selectEggNum, egg1,
                 screen.blit(character_frame, (cha_x, cha_y))
                 frame = (frame + 1) % 4
             elif (isWalking):
-                character_image = transform.scale(image.load('WALK성인.png'), (144 * 2, 144 * 2))
+                character_image = transform.scale(image.load('./resource/WALK성인.png'), (144 * 2, 144 * 2))
                 wk_frame_width = 36 * 2
                 wk_frame_height = 36 * 2
 
@@ -316,7 +316,7 @@ def draw_third_scene(screen, thirdScene,backG_1,growChaY,chaImage,cha_x,cha_y,bu
     global CGtext_frame,frame3
     screen.blit(backG_1, (0, 0))
 
-    clearGameTextImg = pygame.image.load('성장완료.png')
+    clearGameTextImg = pygame.image.load('./resource/성장완료.png')
 
     cg_textframe_x = CGtext_frame * 400
 
@@ -342,7 +342,7 @@ def draw_fourth_scene(screen,backG_1,button2image,button2Loc):
     #print('죽음!')
     screen.blit(backG_1, (0, 0))
 
-    clearGameTextImg = pygame.image.load('사망문구.png')
+    clearGameTextImg = pygame.image.load('./resource/사망문구.png')
 
     cg_textframe_x = CGtext_frame * 500
 
